@@ -1,0 +1,34 @@
+.DS_Store
+node_modules
+/dist
+compile-1.cmp
+compile-2.cmp
+compile-3.cmp
+
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Cordova
+/maferca/platforms
+/maferca/plugins
+/public/cordova.js
+
+# Cordova
+/src-cordova/platforms
+/src-cordova/plugins
+/public/cordova.js
