@@ -16,14 +16,13 @@ function DriverAxios() {
 
   this.addHeadSession = (dataRaw) => {
     if (this.profile !== undefined) {
-      const index = this.profile.organization.findIndex((e) => e.organization === this.profile.org);
       return {
         ...{
           session: {
             user_id: this.profile.userid,
             session_key: this.profile.sesionkey,
-            society_id: this.profile.organization[index].society,
-            organization_id: this.profile.org,
+            society: this.profile.society,
+            organization: this.profile.org,
             route_current: 'app',
             origin: 'app',
             version: this.profile.versionCurrent,

@@ -15,5 +15,6 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     "linebreak-style": ["error", (process.platform === "win32" ? "windows" : "unix")],
     'max-len': ["error", { "code": 200 }],
+    "prefer-destructuring": "off",
   },
 };

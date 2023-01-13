@@ -1,5 +1,5 @@
 function versionCurrent() {
-  return 36;
+  return 1;
 }
 
 export default versionCurrent;

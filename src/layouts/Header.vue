@@ -49,14 +49,14 @@ export default {
 
     query() {
       if (this.search.trim().length >= 3) {
-        this.$store.dispatch('catalogue/QuerySearch', this.search);
+        this.$store.dispatch('catalogue/QuerySearch', { query: this.search, filters: null });
         this.CATALOGUE(true);
       }
     },
 
     clear() {
       this.search = '';
-      this.$store.dispatch('catalogue/QuerySearch', '');
+      this.$store.dispatch('catalogue/QuerySearch', { query: '', filters: null });
       this.CATALOGUE(false);
     },
   },

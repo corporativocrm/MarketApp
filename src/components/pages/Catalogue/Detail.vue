@@ -28,7 +28,9 @@
               aspect-ratio="1.7"
               height="250px"
               contain
-              :src="getImage"
+              src-lazy="system/no-image.webp"
+              onError="this.src = 'system/no-image.webp'"
+              :src="'https://www.sistemacrm.com.ve/api/tmp/images/'.concat(getCode, '.webp')"
             ></v-img>
           </v-col>
           <v-col cols="12" class="pa-4 pt-0">
@@ -36,21 +38,19 @@
               <div>
                 <div class="body-1 font-weight-bold">{{getTitle}}</div>
                 <div class="mt-2 body-2">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Vestibulum ornare lorem sit amet sollicitudin pretium.
+                  SKU: {{getCode}}
                 </div>
                 <v-row
                   class="pa-1 pt-4"
                   justify="start"
                   align="center"
                 >
-                  <v-chip small color="teal" outlined class="ml-1">
+                  <v-chip
+                    v-for="(item, index) in getTags"
+                    :key="index"
+                    small color="teal" outlined class="ml-1">
                     <v-icon small left>mdi-label</v-icon>
-                    Categoria
-                  </v-chip>
-                  <v-chip small color="teal" outlined class="ml-1">
-                    <v-icon small left>mdi-label</v-icon>
-                    Descuento 5%
+                    {{item}}
                   </v-chip>
                 </v-row>
                 <div class="mt-3 title">{{getPrice}}</div>
@@ -59,7 +59,7 @@
           </v-col>
         </v-row>
 
-        <v-card-actions>
+        <v-card-actions class="mb-4">
           <v-btn rounded color="red" outlined @click="close()"> Cerrar</v-btn>
           <v-spacer></v-spacer>
           <v-btn rounded color="primary"> Agregar</v-btn>
@@ -85,19 +85,30 @@ export default {
         return this.showDetail;
       },
     },
+
     getTitle: {
       get() {
         return this.itemView !== null ? this.itemView.name : '';
       },
     },
-    getImage: {
+    getCode: {
       get() {
-        return this.itemView !== null ? this.itemView.image : 'system/no-image.webp';
+        return this.itemView !== null ? this.itemView.code : '';
+      },
+    },
+    getTags: {
+      get() {
+        if (this.itemView !== null) {
+          const tags = [this.itemView.brand, this.itemView.category];
+          if (this.itemView.family.length) tags.push(this.itemView.family);
+          return tags;
+        }
+        return [];
       },
     },
     getPrice: {
       get() {
-        return this.itemView !== null ? this.itemView.coin.concat(this.itemView.price) : '0';
+        return this.itemView !== null ? this.itemView.price.coin.concat(' ', this.itemView.price.price) : '0';
       },
     },
   },

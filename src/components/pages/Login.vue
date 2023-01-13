@@ -83,9 +83,9 @@ export default {
               const dataProfile = {
                 name: dataUser.user_name,
                 userid: dataUser.id,
-                rol: dataUser.organization[0].rol,
                 color: dataUser.color,
                 org: dataUser.organization[0].organization,
+                society: dataUser.organization[0].society,
                 organization: dataUser.organization,
                 multibasket: dataUser.multibasket === '1',
                 versionCurrent: versionCurrent(),

@@ -9,7 +9,8 @@
         class="grey lighten-4 pt-12"
         fluid>
         <v-subheader
-          class="pa-0 d-flex justify-end">
+          class="pa-0 d-flex justify-space-between">
+          <i class="mt-1">{{countProducts}}</i>
           <v-menu bottom offset-y v-model="modalMenuFilters">
             <template v-slot:activator="{ on, attrs }">
               <v-btn
@@ -39,11 +40,17 @@
                   Marca
                 </v-list-item-title>
               </v-list-item>
+              <v-divider></v-divider>
+              <v-list-item>
+                <v-list-item-title @click="resetFilters()">
+                  Reiniciar
+                </v-list-item-title>
+              </v-list-item>
             </v-list>
           </v-menu>
         </v-subheader>
         <v-card
-          v-for="(item, index) in items"
+          v-for="(item, index) in products"
           :key="index"
           class="mx-auto pa-0 mt-4"
           color="white"
@@ -54,28 +61,26 @@
               <v-img
                 width="100%"
                 height="152px"
-                :src="item.image"
+                src-lazy="system/no-image.webp"
+                onError="this.src = 'system/no-image.webp'"
+                :src="'https://www.sistemacrm.com.ve/api/tmp/images/'.concat(item.code, '.webp')"
               >
-                <v-btn
-                  fab
-                  light
-                  small
-                  absolute
+                <v-btn fab light small absolute
                   style="top:2px;right:2px;opacity:0.6 !important;"
                   @click.stop="favorite(index)"
                 >
-                  <v-icon color="blue">mdi-heart{{item.fav ? '':'-outline'}}</v-icon>
+                  <v-icon color="blue">mdi-heart-outline</v-icon>
                 </v-btn>
               </v-img>
             </v-col>
             <v-col cols="6" class="pa-0">
               <v-card-title style="padding: 8px;">
                 <div>
-                  <div class="body-2">
+                  <div class="body-2 font-weight-bold">
                     {{item.name}}
                   </div>
-                  <div class="body-2">Ellie Goulding</div>
-                  <div class="title">{{item.coin}}{{item.price}}</div>
+                  <div class="body-2">{{item.brand}}</div>
+                  <div class="title">{{item.price.coin}} {{item.price.price}}</div>
                 </div>
               </v-card-title>
             </v-col>
@@ -87,8 +92,10 @@
       <div class="text-center">
         <v-pagination
           v-model="page"
-          :length="8"
+          :length="index.length"
           :total-visible="5"
+          @next="changePage()"
+          @previous="changePage()"
           circle
         ></v-pagination>
       </div>
@@ -257,10 +264,10 @@
     </v-dialog>
 
     <!-- MODAL LOADING -->
-    <v-dialog v-model="modalLoading" persistent width="300">
+    <v-dialog v-model="showLoading" persistent width="300">
       <v-card :color="profile.color" dark>
         <v-card-text>
-          Filtrando contenido
+          {{captionLoading}}
           <v-progress-linear
             indeterminate
             color="white"
@@ -281,6 +288,7 @@ export default {
   data() {
     return {
       page: 1,
+      query: '',
       modalMenuFilters: false,
       modalFilters: false,
       modalLoading: false,
@@ -289,51 +297,14 @@ export default {
         price: { min: 0, max: 0 },
         category: [],
         factory: [],
+        range: { min: '', max: '' },
       },
-      products: [
-        {
-          name: 'item 1',
-          image: 'https://ve.epaenlinea.com/media/catalog/product/cache/9de02ba98484dc90d74f47a4b2fb992a/9/9/99ea41d5-58fd-4643-8cbc-189700dbbc25.jpg',
-          price: 1,
-          coin: 'USD $',
-          fav: false,
-        },
-        {
-          name: 'item 2',
-          image: 'https://ve.epaenlinea.com/media/catalog/product/cache/9de02ba98484dc90d74f47a4b2fb992a/7/4/749b627a-24d4-4273-a85b-a53c716b2aba.jpg',
-          price: 10,
-          coin: 'USD $',
-          fav: false,
-        },
-        {
-          name: 'item 3',
-          image: 'https://ve.epaenlinea.com/media/catalog/product/cache/9de02ba98484dc90d74f47a4b2fb992a/e/d/edb13e0e-ad6a-4b25-87ae-8b40cf4554dd.jpg',
-          price: 8,
-          coin: 'USD $',
-          fav: false,
-        },
-        {
-          name: 'item 4',
-          image: 'https://ve.epaenlinea.com/media/catalog/product/cache/9de02ba98484dc90d74f47a4b2fb992a/f/6/f6028354-a774-427c-bc84-73d866a1d639.jpg',
-          price: 7,
-          coin: 'USD $',
-          fav: false,
-        },
-        {
-          name: 'item 5',
-          image: 'https://ve.epaenlinea.com/media/catalog/product/cache/9de02ba98484dc90d74f47a4b2fb992a/5/b/5b958384-4d11-4627-9d70-6005afb7caeb.jpg',
-          price: 7,
-          coin: 'USD $',
-          fav: false,
-        },
-      ],
-      items: [],
     };
   },
   computed: {
     ...mapState('menu', ['catalogue']),
     ...mapState('StoreProfile', ['profile']),
-    ...mapState('catalogue', ['showDetail', 'itemView']),
+    ...mapState('catalogue', ['catalogueLoaded', 'showDetail', 'itemView', 'querySearch', 'products', 'index']),
 
     showForm: {
       get() {
@@ -342,13 +313,34 @@ export default {
       set() { },
     },
 
+    showLoading: {
+      get() {
+        return !this.catalogueLoaded && this.catalogue;
+      },
+    },
+
+    captionLoading: {
+      get() {
+        return (this.query === this.querySearch) ? 'Filtrando productos' : 'Descargando productos';
+      },
+    },
+
+    countProducts: {
+      get() {
+        if (this.index.length) {
+          const count = this.index.reduce((a, c) => a + parseInt(c.cnt, 10), 0);
+          return this.index[this.page - 1].cnt.toString().concat('/', count);
+        }
+        return '0/0';
+      },
+    },
   },
   methods: {
     ...mapMutations('menu', ['CATALOGUE']),
     ...mapActions('catalogue', ['toggleFormDetail', 'setItemView']),
 
     favorite(index) {
-      this.items[index].fav = !this.items[index].fav;
+      return index;
     },
 
     openDetail(e) {
@@ -361,15 +353,31 @@ export default {
       this.modalFilters = !this.modalFilters;
     },
 
+    changePage() {
+      this.modalLoading = true;
+      this.filters.range = this.index[this.page - 1];
+      this.$store.dispatch('catalogue/QuerySearch', { query: this.querySearch, filters: this.filters }).finally(() => {
+        this.modalLoading = false;
+      });
+    },
+
+    resetFilters() {
+      this.modalLoading = true;
+      this.$store.dispatch('catalogue/QuerySearch', { query: this.querySearch, filters: null }).finally(() => {
+        this.modalLoading = false;
+      });
+    },
+
     filterItems() {
-      this.items = this.products.filter((e) => e.price >= this.filters.price.min && e.price <= this.filters.price.max);
+      this.query = this.querySearch;
       this.modalFilters = false;
       this.modalLoading = true;
-      setTimeout(() => { this.modalLoading = false; }, 4000);
+      this.filters.range = { min: '', max: '' };
+
+      this.$store.dispatch('catalogue/QuerySearch', { query: this.querySearch, filters: this.filters }).finally(() => {
+        this.modalLoading = false;
+      });
     },
-  },
-  mounted() {
-    this.items = this.products;
   },
 };
 
