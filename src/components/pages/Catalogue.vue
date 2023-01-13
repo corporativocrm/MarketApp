@@ -49,6 +49,26 @@
             </v-list>
           </v-menu>
         </v-subheader>
+
+        <v-container v-if="showLoading">
+          <v-card
+            class="mx-auto pa-0 mt-5"
+            color="white"
+            v-for="item in [1,2,3]"
+            :key="item">
+            <v-row>
+              <v-col cols="6" class="pa-0">
+                <div class="skeleton-item-image skeleton-animation-wave"></div>
+              </v-col>
+              <v-col cols="6" class="pa-3">
+                <div class="skeleton-item-title skeleton-animation-pulse"></div>
+                <div class="mt-2 skeleton-item-title skeleton-animation-pulse"></div>
+                <div class="mt-6 skeleton-item-price skeleton-animation-pulse"></div>
+              </v-col>
+            </v-row>
+          </v-card>
+        </v-container>
+
         <v-card
           v-for="(item, index) in products"
           :key="index"
@@ -61,9 +81,9 @@
               <v-img
                 width="100%"
                 height="152px"
-                src-lazy="system/no-image.webp"
-                onError="this.src = 'system/no-image.webp'"
-                :src="'https://www.sistemacrm.com.ve/api/tmp/images/'.concat(item.code, '.webp')"
+                alt="loading"
+                src="system/no-image.webp"
+                :srcset="'https://www.sistemacrm.com.ve/api/tmp/images/'.concat(item.code, '.webp')"
               >
                 <v-btn fab light small absolute
                   style="top:2px;right:2px;opacity:0.6 !important;"
@@ -299,6 +319,11 @@ export default {
         factory: [],
         range: { min: '', max: '' },
       },
+      attrs: {
+        class: 'mb-6',
+        boilerplate: true,
+        elevation: 2,
+      },
     };
   },
   computed: {
@@ -382,3 +407,42 @@ export default {
 };
 
 </script>
+
+<style>
+.skeleton-item-image {width:90%;height:150px;background-color:#e8e8e8;}
+.skeleton-item-title {width:90%;height:20px;background-color:#e8e8e8;}
+.skeleton-item-price {width:50%;height:35px;background-color:#e8e8e8;}
+.skeleton-animation-wave {
+  animation: wave 1s infinite linear forwards;
+  -webkit-animation: wave 1s infinite linear forwards;
+  background: #f6f7f8;
+  background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
+  background-size: 800px 104px;
+}
+.skeleton-animation-pulse {
+  animation: pulse 1s infinite ease-in-out;
+  -webkit-animation: pulse 1s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% { background-color: rgba(165, 165, 165, .1); }
+  50% { background-color: rgba(165, 165, 165, .3); }
+  100% { background-color: rgba(165, 165, 165, .1); }
+}
+
+@-webkit-keyframes pulse {
+  0% { background-color: rgba(165, 165, 165, .1); }
+  50% { background-color: rgba(165, 165, 165, .3); }
+  100% { background-color: rgba(165, 165, 165, .1); }
+}
+
+@keyframes wave {
+  0% { background-position: -468px 0 }
+  100% { background-position: 468px 0 }
+}
+
+@-webkit-keyframes wave {
+  0% {background-position: -468px 0 }
+  100% { background-position: 468px 0 }
+}
+</style>
