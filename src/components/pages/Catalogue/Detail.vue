@@ -25,13 +25,26 @@
         <v-row justify="start">
           <v-col cols="12" class="pa-6 pt-5 pb-2 d-flex justify-center">
             <v-img
-              aspect-ratio="1.7"
               height="250px"
+              alt="loading"
               contain
-              src-lazy="system/no-image.webp"
-              onError="this.src = 'system/no-image.webp'"
-              :src="'https://www.sistemacrm.com.ve/api/tmp/images/'.concat(getCode, '.webp')"
-            ></v-img>
+              lazy-src="system/no-image.webp"
+              @error="handlerError"
+              :src="getImage"
+            >
+              <template v-slot:placeholder>
+                <v-row
+                  class="fill-height ma-0"
+                  align="center"
+                  justify="center"
+                >
+                  <v-progress-circular
+                    indeterminate
+                    color="grey lighten-5"
+                  ></v-progress-circular>
+                </v-row>
+              </template>
+            </v-img>
           </v-col>
           <v-col cols="12" class="pa-4 pt-0">
             <v-card-title style="padding: 8px;">
@@ -75,6 +88,7 @@ import { mapState, mapActions } from 'vuex';
 export default {
   name: 'detail-product',
   data: () => ({
+    errorImage: false,
   }),
   computed: {
     ...mapState('catalogue', ['showDetail', 'itemView']),
@@ -83,6 +97,15 @@ export default {
     showForm: {
       get() {
         return this.showDetail;
+      },
+    },
+
+    getImage: {
+      get() {
+        if (this.errorImage) {
+          return 'system/no-image.webp';
+        }
+        return 'https://www.sistemacrm.com.ve/api/tmp/images/'.concat(this.getCode, '.webp');
       },
     },
 
@@ -119,8 +142,19 @@ export default {
       this.toggleFormDetail();
     },
 
+    handlerError($event) {
+      this.errorImage = $event.length;
+    },
+
     alert(message, type = 'info') {
       this.$store.dispatch('mensaje/push', [message, type]);
+    },
+  },
+  watch: {
+    showForm: {
+      handler() {
+        this.errorImage = false;
+      },
     },
   },
   mounted() {

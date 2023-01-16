@@ -82,9 +82,21 @@
                 width="100%"
                 height="152px"
                 alt="loading"
-                src="system/no-image.webp"
-                :srcset="'https://www.sistemacrm.com.ve/api/tmp/images/'.concat(item.code, '.webp')"
+                lazy-src="system/no-image.webp"
+                :src="'https://www.sistemacrm.com.ve/api/tmp/images/'.concat(item.code, '.webp')"
               >
+              <template v-slot:placeholder>
+                <v-row
+                  class="fill-height ma-0"
+                  align="center"
+                  justify="center"
+                >
+                  <v-progress-circular
+                    indeterminate
+                    color="grey lighten-5"
+                  ></v-progress-circular>
+                </v-row>
+              </template>
                 <v-btn fab light small absolute
                   style="top:2px;right:2px;opacity:0.6 !important;"
                   @click.stop="favorite(index)"
@@ -135,134 +147,32 @@
                 Establesca los rangos de precio a filtrar
               </v-subheader>
               <v-text-field
-                v-model="filters.price.min"
+                v-model="price.min"
                 class="mt-1" label="Minimo" prefix="$"
               ></v-text-field>
               <v-text-field
-                v-model="filters.price.max"
+                v-model="price.max"
                 label="Maximo" prefix="$"
               ></v-text-field>
           </v-col>
         </v-card-text>
         <v-card-text style="height: 300px;" v-else-if="filterType == 'category'">
-          <v-radio-group column>
-            <v-radio
-              label="Bahamas, The"
-              value="bahamas"
-            ></v-radio>
-            <v-radio
-              label="Bahrain"
-              value="bahrain"
-            ></v-radio>
-            <v-radio
-              label="Bangladesh"
-              value="bangladesh"
-            ></v-radio>
-            <v-radio
-              label="Barbados"
-              value="barbados"
-            ></v-radio>
-            <v-radio
-              label="Belarus"
-              value="belarus"
-            ></v-radio>
-            <v-radio
-              label="Belgium"
-              value="belgium"
-            ></v-radio>
-            <v-radio
-              label="Belize"
-              value="belize"
-            ></v-radio>
-            <v-radio
-              label="Benin"
-              value="benin"
-            ></v-radio>
-            <v-radio
-              label="Bhutan"
-              value="bhutan"
-            ></v-radio>
-            <v-radio
-              label="Bolivia"
-              value="bolivia"
-            ></v-radio>
-            <v-radio
-              label="Bosnia and Herzegovina"
-              value="bosnia"
-            ></v-radio>
-            <v-radio
-              label="Botswana"
-              value="botswana"
-            ></v-radio>
-            <v-radio
-              label="Brazil"
-              value="brazil"
-            ></v-radio>
-            <v-radio
-              label="Brunei"
-              value="brunei"
-            ></v-radio>
-          </v-radio-group>
+          <v-checkbox v-for="(category, index) in listCategories"
+            v-model="preselectFilters"
+            :key="index"
+            :label="category"
+            :value="category"
+            hide-details
+          ></v-checkbox>
         </v-card-text>
         <v-card-text style="height: 300px;" v-else-if="filterType == 'factory'">
-          <v-radio-group column>
-            <v-radio
-              label="Bahamas, The"
-              value="bahamas"
-            ></v-radio>
-            <v-radio
-              label="Bahrain"
-              value="bahrain"
-            ></v-radio>
-            <v-radio
-              label="Bangladesh"
-              value="bangladesh"
-            ></v-radio>
-            <v-radio
-              label="Barbados"
-              value="barbados"
-            ></v-radio>
-            <v-radio
-              label="Belarus"
-              value="belarus"
-            ></v-radio>
-            <v-radio
-              label="Belgium"
-              value="belgium"
-            ></v-radio>
-            <v-radio
-              label="Belize"
-              value="belize"
-            ></v-radio>
-            <v-radio
-              label="Benin"
-              value="benin"
-            ></v-radio>
-            <v-radio
-              label="Bhutan"
-              value="bhutan"
-            ></v-radio>
-            <v-radio
-              label="Bolivia"
-              value="bolivia"
-            ></v-radio>
-            <v-radio
-              label="Bosnia and Herzegovina"
-              value="bosnia"
-            ></v-radio>
-            <v-radio
-              label="Botswana"
-              value="botswana"
-            ></v-radio>
-            <v-radio
-              label="Brazil"
-              value="brazil"
-            ></v-radio>
-            <v-radio
-              label="Brunei"
-              value="brunei"
-            ></v-radio>
-          </v-radio-group>
+          <v-checkbox v-for="(factory, index) in listFactory"
+            v-model="preselectFilters"
+            :key="index"
+            :label="factory"
+            :value="factory"
+            hide-details
+          ></v-checkbox>
         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions>
@@ -313,6 +223,8 @@ export default {
       modalFilters: false,
       modalLoading: false,
       filterType: '',
+      preselectFilters: [],
+      price: { min: 0, max: 0 },
       filters: {
         price: { min: 0, max: 0 },
         category: [],
@@ -359,6 +271,26 @@ export default {
         return '0/0';
       },
     },
+
+    listCategories: {
+      get() {
+        if (this.products.length) {
+          const result = this.products.map((e) => e.category);
+          return Array.from(new Set(result));
+        }
+        return [];
+      },
+    },
+
+    listFactory: {
+      get() {
+        if (this.products.length) {
+          const result = this.products.map((e) => e.brand);
+          return Array.from(new Set(result));
+        }
+        return [];
+      },
+    },
   },
   methods: {
     ...mapMutations('menu', ['CATALOGUE']),
@@ -375,6 +307,21 @@ export default {
 
     openFilters(type) {
       this.filterType = type;
+
+      switch (type) {
+        case 'category':
+          this.preselectFilters = this.filters.category;
+          break;
+        case 'factory':
+          this.preselectFilters = this.filters.factory;
+          break;
+        case 'price':
+          this.price = this.filters.price;
+          break;
+        default:
+          break;
+      }
+
       this.modalFilters = !this.modalFilters;
     },
 
@@ -388,12 +335,38 @@ export default {
 
     resetFilters() {
       this.modalLoading = true;
+      this.filters = {
+        price: { min: 0, max: 0 },
+        category: [],
+        factory: [],
+        range: { min: '', max: '' },
+      };
+
       this.$store.dispatch('catalogue/QuerySearch', { query: this.querySearch, filters: null }).finally(() => {
         this.modalLoading = false;
       });
     },
 
     filterItems() {
+      switch (this.filterType) {
+        case 'category':
+          this.filters.category = this.preselectFilters;
+          break;
+        case 'factory':
+          this.filters.factory = this.preselectFilters;
+          break;
+        case 'price':
+          if (this.price.min >= 0 && this.price.max > 0) {
+            this.filters.price = this.price;
+          } else {
+            this.alert('El rango establecido no esta permitido');
+            return;
+          }
+          break;
+        default:
+          break;
+      }
+
       this.query = this.querySearch;
       this.modalFilters = false;
       this.modalLoading = true;
@@ -402,6 +375,24 @@ export default {
       this.$store.dispatch('catalogue/QuerySearch', { query: this.querySearch, filters: this.filters }).finally(() => {
         this.modalLoading = false;
       });
+    },
+
+    alert(message, type = 'info') {
+      this.$store.dispatch('mensaje/push', [message, type]);
+    },
+  },
+  watch: {
+    showForm: {
+      handler(show) {
+        if (show && (this.query !== this.querySearch)) {
+          this.filters = {
+            price: { min: 0, max: 0 },
+            category: [],
+            factory: [],
+            range: { min: '', max: '' },
+          };
+        }
+      },
     },
   },
 };

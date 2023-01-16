@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="pt-2 mt-14 mb-16" v-show="!preload">
+  <v-container fluid class="pt-2 mt-14 mb-2" v-show="!preload">
     <NavigationDrawer/>
     <v-card class="mb-4 elevation-5">
       <v-carousel height="200px"
