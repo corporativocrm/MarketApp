@@ -48,10 +48,10 @@
       </v-col>
     </v-row>
 
-    <ModalNotify/>
-    <Catalogue/>
-    <Shopcart/>
-    <Detail/>
+    <DialogMessage/>
+    <DialogCatalogue/>
+    <DialogShopcart/>
+    <DialogDetail/>
   </v-container>
 </template>
 
@@ -59,13 +59,13 @@
 // eslint-disable-next-line import/extensions
 import { mapActions, mapState } from 'vuex';
 // eslint-disable-next-line import/extensions
-import Shopcart from './pages/Shopcart.vue';
+import DialogShopcart from './pages/DialogShopcart.vue';
 // eslint-disable-next-line import/extensions
-import Catalogue from './pages/Catalogue';
+import DialogCatalogue from './pages/DialogCatalogue';
 // eslint-disable-next-line import/extensions
-import ModalNotify from './widget/Notify';
+import DialogMessage from './pages/DialogMessage';
 // eslint-disable-next-line import/extensions
-import Detail from './pages/Catalogue/Detail';
+import DialogDetail from './pages/Catalogue/DialogDetail';
 // eslint-disable-next-line import/extensions
 import NavigationDrawer from './widget/NavigationDrawer';
 
@@ -120,7 +120,7 @@ export default {
   }),
 
   components: {
-    NavigationDrawer, Shopcart, Catalogue, ModalNotify, Detail,
+    NavigationDrawer, DialogShopcart, DialogCatalogue, DialogMessage, DialogDetail,
   },
   computed: {
     ...mapState('StoreProfile', ['profile']),

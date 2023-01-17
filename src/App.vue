@@ -1,10 +1,7 @@
 <template>
   <v-app>
     <Iniciando/>
-    <v-content v-if="loading">
-      <Cargando/>
-    </v-content>
-    <div v-else>
+    <div>
       <v-content v-if="session == null">
         <Login/>
       </v-content>
@@ -22,8 +19,6 @@
 import { mapActions, mapState } from 'vuex';
 // eslint-disable-next-line import/extensions
 import Iniciando from './components/widget/Iniciando';
-// eslint-disable-next-line import/extensions
-import Cargando from './components/widget/Cargando';
 // eslint-disable-next-line import/extensions
 import {
   DB,
@@ -44,7 +39,7 @@ export default {
     session: null,
   }),
   components: {
-    Header, Iniciando, Principal, Cargando, Login, Mensaje,
+    Header, Iniciando, Principal, Login, Mensaje,
   },
   computed: {
     ...mapState('WebServices', ['loading', 'preload']),

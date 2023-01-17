@@ -1,29 +1,14 @@
 <template>
   <v-row justify="center">
     <v-dialog
+    content-class="mt-12"
     transition="scale-transition"
+    persistent fullscreen
     origin="center center"
-    :retain-focus="false"
-    v-model="showModalNotify"
-    persistent>
+    v-model="showDialogMessage">
       <v-card>
-        <v-toolbar :color="profile.color" dark height="50px">
-          <v-icon class="mr-2">
-            mdi-message-text-outline
-          </v-icon>
-            <h1 class="title mt-2 white--text">
-              Mensajes
-            </h1>
-          <v-spacer></v-spacer>
-            <v-btn icon dark @click="close()">
-              <v-icon>
-                mdi-close
-              </v-icon>
-            </v-btn>
-        </v-toolbar>
-
         <v-row dense class="pa-2">
-          <div style="overflow-y:auto;min-height:50vh;max-height:65vh;width:100%">
+          <div style="overflow-y:auto;min-height:90vh;max-height:92vh;width:100%">
 
             <div v-if="viewNotify == -1">
               <v-list three-line>
@@ -83,7 +68,7 @@
                   small
                   class="white--text"
                   color="primary"
-                  :disabled = "dataNotifi[viewNotify].answer.guid !== undefined"
+                  :disabled="dataNotifi[viewNotify].answer.guid !== undefined"
                   @click="send()"
                   fab>
                   <v-icon dark>mdi-send</v-icon>
@@ -143,7 +128,7 @@ export default {
     answer: '',
   }),
   computed: {
-    ...mapState('menu', ['showModalNotify']),
+    ...mapState('menu', ['showDialogMessage']),
     ...mapState('StoreProfile', ['profile']),
     ...mapState('notifications', ['dataNotifi']),
 

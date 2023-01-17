@@ -10,41 +10,37 @@ export default {
 
     shopcart: false,
 
-    showModalUpdate: false,
-
-    showModalNotify: false,
-
-    showNavigationBar: true,
-
+    showDialogMessage: false,
   },
   mutations: {
 
     HOME(state) {
       state.catalogue = false;
       state.shopcart = false;
-      state.showNavigationBar = true;
+      state.showDialogMessage = false;
     },
 
     CATALOGUE(state, param = null) {
       state.catalogue = param != null ? param : !state.catalogue;
       state.shopcart = false;
+      state.showDialogMessage = false;
     },
 
     SHOPCART(state, param = null) {
       state.shopcart = param != null ? param : !state.shopcart;
       state.catalogue = false;
+      state.showDialogMessage = false;
     },
 
-    SHOW_FORM_NOTIFY_MODAL(state) {
-      state.showModalNotify = !state.showModalNotify;
+    MESSAGE(state, param = null) {
+      state.showDialogMessage = param != null ? param : !state.showDialogMessage;
+      state.shopcart = false;
+      state.catalogue = false;
     },
   },
   actions: {
-    toggleFormModalNotify({ commit }) {
-      commit('SHOW_FORM_NOTIFY_MODAL');
-    },
-    setNavigationBar({ state }, param) {
-      state.showNavigationBar = param;
+    toggleFormModalNotify({ state }) {
+      state.showDialogMessage = !state.showDialogMessage;
     },
   },
 

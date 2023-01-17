@@ -23,7 +23,26 @@
     <v-divider></v-divider>
 
     <v-list nav dense>
-      <v-list-item class="mt-2">
+
+      <v-list-item
+        @click="goHome()">
+        <v-list-item-title class="subtitle-1">
+          <v-icon :color="profile.color"
+           style="font-size:1.7rem;">mdi-home-outline</v-icon>
+            Inicio
+        </v-list-item-title>
+      </v-list-item>
+
+      <v-list-item v-if="!catalogue && products.length"
+        @click="openCatalogue()">
+        <v-list-item-title class="subtitle-1">
+          <v-icon :color="profile.color"
+            style="font-size:1.7rem;"> mdi-star-outline</v-icon>
+            Catalogo
+        </v-list-item-title>
+      </v-list-item>
+
+      <v-list-item class="mt-1">
         <v-list-item-title @click="openNotify()" class="subtitle-1">
           <v-badge
             v-if="dataNotifi.length > 0"
@@ -41,6 +60,13 @@
         <v-list-item-title class="subtitle-1">
           <v-icon :color="profile.color">mdi-heart-outline</v-icon>
             Favoritos
+        </v-list-item-title>
+      </v-list-item>
+
+      <v-list-item class="mt-3">
+        <v-list-item-title @click="openShopCart()" class="subtitle-1">
+          <v-icon :color="profile.color">mdi-cart-outline</v-icon>
+            Mi carrito
         </v-list-item-title>
       </v-list-item>
 
@@ -63,16 +89,18 @@
 
 <script>
 // eslint-disable-next-line import/extensions
-import { mapActions, mapState } from 'vuex';
+import { mapMutations, mapActions, mapState } from 'vuex';
 // eslint-disable-next-line import/extensions
 import { DB } from '../../plugins/database';
 
 export default {
   name: 'NavigationDrawer',
   computed: {
+    ...mapState('menu', ['catalogue']),
     ...mapState('StoreProfile', ['profile']),
     ...mapState('navigationDrawer', ['drawer']),
     ...mapState('notifications', ['dataNotifi']),
+    ...mapState('catalogue', ['products']),
 
     showDrawer: {
       get() { return this.drawer; },
@@ -83,7 +111,7 @@ export default {
   },
   methods: {
     ...mapActions('navigationDrawer', ['toggleDrawer']),
-    ...mapActions('menu', ['toggleFormModalNotify']),
+    ...mapMutations('menu', ['HOME', 'CATALOGUE', 'SHOPCART', 'MESSAGE']),
 
     Logout() {
       // BORRAR TODO
@@ -96,11 +124,24 @@ export default {
       return this.dataNotifi.filter((e) => e.view === false).length;
     },
 
+    goHome() {
+      this.showDrawer = false;
+      this.HOME(true);
+    },
+
+    openCatalogue() {
+      this.showDrawer = false;
+      this.CATALOGUE(true);
+    },
+
     openNotify() {
-      if (this.dataNotifi.length > 0) {
-        this.showDrawer = false;
-        this.toggleFormModalNotify();
-      }
+      this.showDrawer = false;
+      this.MESSAGE(true);
+    },
+
+    openShopCart() {
+      this.showDrawer = false;
+      this.SHOPCART(true);
     },
   },
 };

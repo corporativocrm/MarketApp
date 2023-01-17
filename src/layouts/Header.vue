@@ -5,19 +5,20 @@
     style="position:fixed;top:0;width:100%;z-index:9999;border-radius:0px;"
     height="50">
 
-    <!--v-system-bar color="deep-purple darken-3"></v-system-bar-->
     <v-app-bar :color="profile.color" dark prominent>
       <v-app-bar-nav-icon @click.stop="toggleDrawer"></v-app-bar-nav-icon>
+      <h5 v-if="showCaption"
+        class="ml-4 mt-2">
+        {{textCaption}}
+      </h5>
       <v-text-field
-          id="inputSearch"
+          v-if="!showCaption"
           v-model="search"
-          class="ml-4 mr-1 mt-1"
-          hide-details
-          label="Search"
+          style="margin:2px 2px auto 8px;"
           type="search"
+          hide-details rounded dense solo-inverted
           prepend-inner-icon="mdi-magnify"
           :append-icon="search.trim().length ? 'mdi-close' : ''"
-          solo-inverted
           @change="query()"
           @click:append="clear()"
           ></v-text-field>
@@ -35,9 +36,23 @@ export default {
     search: '',
   }),
   computed: {
+    ...mapState('menu', ['showDialogMessage', 'shopcart']),
     ...mapState('StoreProfile', ['profile']),
     ...mapState('WebServices', ['preload', 'loading']),
 
+    showCaption: {
+      get() {
+        return this.showDialogMessage || this.shopcart;
+      },
+    },
+
+    textCaption: {
+      get() {
+        if (this.showDialogMessage) return 'Mensajes';
+        if (this.shopcart) return 'Mi carrito';
+        return '';
+      },
+    },
   },
   methods: {
     ...mapMutations('menu', ['CATALOGUE']),
@@ -59,16 +74,6 @@ export default {
       this.$store.dispatch('catalogue/QuerySearch', { query: '', filters: null });
       this.CATALOGUE(false);
     },
-  },
-  mounted() {
-    this.idTimer = setInterval(() => {
-      const e = document.querySelector('#inputSearch');
-      if (e !== null) {
-        e.parentElement.parentElement.parentElement.style.minHeight = '35px';
-        e.parentElement.parentElement.parentElement.style.borderRadius = '15px';
-        clearInterval(this.idTimer);
-      }
-    }, 1000);
   },
 };
 
