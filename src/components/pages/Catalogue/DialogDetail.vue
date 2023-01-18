@@ -66,7 +66,25 @@
                     {{item}}
                   </v-chip>
                 </v-row>
-                <div class="mt-3 title">{{getPrice}}</div>
+                <v-row>
+                  <v-col cols="6">
+                    <div class="mt-3 title">{{getPrice}}</div>
+                  </v-col>
+                  <v-col cols="6">
+                    <v-text-field
+                      v-model="quantity"
+                      style="margin:2px 2px auto 8px;"
+                      class="pa-0"
+                      label="search"
+                      type="search"
+                      hide-details rounded dense solo-inverted
+                      prepend-inner-icon="mdi-minus"
+                      append-icon="mdi-plus"
+                      @click:append="quantity++"
+                      @click:prepend-inner="quantity -= quantity > 1 ? 1 : 0"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
               </div>
             </v-card-title>
           </v-col>
@@ -75,7 +93,13 @@
         <v-card-actions class="mb-4">
           <v-btn rounded color="red" outlined @click="close()"> Cerrar</v-btn>
           <v-spacer></v-spacer>
-          <v-btn rounded color="primary"> Agregar</v-btn>
+          <v-btn
+            rounded
+            color="primary"
+            :disabled="disabled"
+            @click="addToCart()">
+            Agregar
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -89,6 +113,8 @@ export default {
   name: 'detail-product',
   data: () => ({
     errorImage: false,
+    quantity: 1,
+    disabled: true,
   }),
   computed: {
     ...mapState('catalogue', ['showDetail', 'itemView']),
@@ -149,15 +175,39 @@ export default {
     alert(message, type = 'info') {
       this.$store.dispatch('mensaje/push', [message, type]);
     },
+
+    addToCart() {
+      const list = localStorage.getItem('listCartShop');
+      const item = {
+        name: this.itemView.name,
+        code: this.itemView.code,
+        image: this.getImage,
+        quantity: this.quantity,
+        coin: this.itemView.price.coin,
+        price: this.itemView.price.price,
+        brand: this.itemView.brand,
+      };
+
+      if (list != null) {
+        const data = JSON.parse(list);
+        data.push(item);
+        localStorage.setItem('listCartShop', JSON.stringify(data));
+      } else {
+        localStorage.setItem('listCartShop', JSON.stringify([item]));
+      }
+
+      this.disabled = true;
+      this.alert('Producto agreagado al carrito', 'success');
+    },
   },
   watch: {
     showForm: {
-      handler() {
+      handler(show) {
         this.errorImage = false;
+        this.quantity = 1;
+        this.disabled = !show;
       },
     },
-  },
-  mounted() {
   },
 };
 </script>

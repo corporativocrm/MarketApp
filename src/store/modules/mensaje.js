@@ -5,6 +5,8 @@ export default {
     showModalAlert: false,
     mensaje: '',
     tipo: '',
+    condition: false,
+    value: null,
   },
   mutations: {
     MOSTRAR(state) {
@@ -18,17 +20,29 @@ export default {
     TIPO(state, payload) {
       state.tipo = payload;
     },
+    MODE(state, payload) {
+      state.condition = payload;
+    },
   },
   actions: {
     ejecutar({ commit }) {
       commit('MOSTRAR');
     },
-    cerrar({ commit }) {
+    cerrar({ commit, state }, param = null) {
       commit('MOSTRAR');
+      state.value = param;
+      state.condition = false;
     },
     push({ commit }, data) {
       commit('MENSAJE', data[0]);
       commit('TIPO', data[1]);
+      commit('MOSTRAR');
+    },
+
+    condition({ commit }, caption) {
+      commit('MENSAJE', caption);
+      commit('TIPO', 'info');
+      commit('MODE', true);
       commit('MOSTRAR');
     },
   },

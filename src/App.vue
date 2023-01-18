@@ -2,13 +2,13 @@
   <v-app>
     <Iniciando/>
     <div>
-      <v-content v-if="session == null">
+      <v-main v-if="session == null">
         <Login/>
-      </v-content>
-      <v-content v-else>
+      </v-main>
+      <v-main v-else>
         <Header/>
         <Principal/>
-      </v-content>
+      </v-main>
     </div>
     <Mensaje/>
   </v-app>

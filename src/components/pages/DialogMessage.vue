@@ -2,10 +2,10 @@
   <v-row justify="center">
     <v-dialog
     content-class="mt-12"
-    transition="scale-transition"
     persistent fullscreen
     origin="center center"
-    v-model="showDialogMessage">
+    v-model="showDialogMessage"
+    transition="dialog-bottom-transition">
       <v-card>
         <v-row dense class="pa-2">
           <div style="overflow-y:auto;min-height:90vh;max-height:92vh;width:100%">

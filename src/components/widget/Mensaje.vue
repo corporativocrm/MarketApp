@@ -11,7 +11,10 @@
                 {{ mensaje }}
               </strong>
             </v-alert>
-            <v-btn @click="cerrar" outlined>Aceptar</v-btn>
+            <div class="d-flex justify-space-around">
+              <v-btn dark outlined v-if="condition" @click="cerrar(false)" color="red">Cancelar</v-btn>
+              <v-btn @click="cerrar(true)" outlined color="primary">Aceptar</v-btn>
+            </div>
         </v-sheet>
     </v-bottom-sheet>
 </template>
@@ -23,7 +26,7 @@ import { mapActions, mapState } from 'vuex';
 export default {
   name: 'modalAlert',
   computed: {
-    ...mapState('mensaje', ['showModalAlert', 'mensaje', 'tipo']),
+    ...mapState('mensaje', ['showModalAlert', 'mensaje', 'tipo', 'condition']),
   },
   methods: {
     ...mapActions('mensaje', ['cerrar']),

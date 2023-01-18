@@ -7,14 +7,15 @@
 
     <v-app-bar :color="profile.color" dark prominent>
       <v-app-bar-nav-icon @click.stop="toggleDrawer"></v-app-bar-nav-icon>
-      <h5 v-if="showCaption"
-        class="ml-4 mt-2">
+      <div v-if="showCaption"
+        class="title ml-2 mt-2">
         {{textCaption}}
-      </h5>
+      </div>
       <v-text-field
           v-if="!showCaption"
           v-model="search"
           style="margin:2px 2px auto 8px;"
+          label="search"
           type="search"
           hide-details rounded dense solo-inverted
           prepend-inner-icon="mdi-magnify"
@@ -78,3 +79,9 @@ export default {
 };
 
 </script>
+
+<style>
+.v-text-field--rounded > .v-input__control > .v-input__slot {
+  padding: 1px 8px;
+}
+</style>

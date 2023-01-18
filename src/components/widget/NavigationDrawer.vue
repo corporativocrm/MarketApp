@@ -52,7 +52,7 @@
             <v-icon :color="profile.color">mdi-message-outline</v-icon>
           </v-badge>
           <v-icon v-else :color="profile.color">mdi-message-outline</v-icon>
-          Mensajes
+            Mensajes
         </v-list-item-title>
       </v-list-item>
 
@@ -63,14 +63,21 @@
         </v-list-item-title>
       </v-list-item>
 
-      <v-list-item class="mt-3">
+      <v-list-item class="mt-1">
         <v-list-item-title @click="openShopCart()" class="subtitle-1">
-          <v-icon :color="profile.color">mdi-cart-outline</v-icon>
+          <v-badge
+            v-if="qtyCartshop > 0"
+            :content="qtyCartshop"
+            :color="profile.color"
+            overlap>
+            <v-icon :color="profile.color">mdi-cart-outline</v-icon>
+          </v-badge>
+          <v-icon v-else :color="profile.color">mdi-cart-outline</v-icon>
             Mi carrito
         </v-list-item-title>
       </v-list-item>
 
-      <v-list-item class="mt-3">
+      <v-list-item class="mt-4">
         <v-list-item-title class="subtitle-1">
           <v-icon :color="profile.color">mdi-gift-outline</v-icon>
             Mis compras
@@ -95,12 +102,23 @@ import { DB } from '../../plugins/database';
 
 export default {
   name: 'NavigationDrawer',
+  data: () => ({
+    qtyCartshop: 0,
+    closeProfile: false,
+  }),
   computed: {
     ...mapState('menu', ['catalogue']),
     ...mapState('StoreProfile', ['profile']),
     ...mapState('navigationDrawer', ['drawer']),
     ...mapState('notifications', ['dataNotifi']),
     ...mapState('catalogue', ['products']),
+    ...mapState('mensaje', ['value']),
+
+    conditionLogout: {
+      get() {
+        return this.value;
+      },
+    },
 
     showDrawer: {
       get() { return this.drawer; },
@@ -114,14 +132,13 @@ export default {
     ...mapMutations('menu', ['HOME', 'CATALOGUE', 'SHOPCART', 'MESSAGE']),
 
     Logout() {
-      // BORRAR TODO
-      localStorage.clear();
-      DB.delete();
-      window.location.reload();
+      this.closeProfile = true;
+      this.condition('¿Seguro que desea cerrar sesión?');
     },
 
     countNotify() {
-      return this.dataNotifi.filter((e) => e.view === false).length;
+      const qty = this.dataNotifi.filter((e) => e.view === false).length;
+      return qty > 99 ? '+99' : qty;
     },
 
     goHome() {
@@ -142,6 +159,34 @@ export default {
     openShopCart() {
       this.showDrawer = false;
       this.SHOPCART(true);
+    },
+
+    condition(message) {
+      this.showDrawer = false;
+      this.$store.dispatch('mensaje/condition', message);
+    },
+  },
+
+  watch: {
+    showDrawer: {
+      handler() {
+        const list = localStorage.getItem('listCartShop');
+        if (list != null) {
+          const qty = JSON.parse(list).length;
+          this.qtyCartshop = qty > 99 ? '+99' : qty;
+        }
+      },
+    },
+    conditionLogout: {
+      handler(r) {
+        if (r && this.closeProfile) {
+          // BORRAR TODO
+          localStorage.clear();
+          DB.delete();
+          window.location.reload();
+        }
+        this.closeProfile = false;
+      },
     },
   },
 };
