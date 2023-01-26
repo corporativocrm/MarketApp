@@ -74,20 +74,22 @@ export default {
     async getUsuario() {
       try {
         if (navigator.onLine) {
-          await httpClient.getAPI('/auth/login', {
+          await httpClient.getAPI('/market/auth/login', {
             user: this.username,
             password: btoa(this.password),
+            company: '5022',
           }).then((response) => {
-            if (response.data.response !== null) {
+            if (response.data.response !== null && response.data.response !== false) {
               const dataUser = response.data.response;
               const dataProfile = {
-                name: dataUser.user_name,
-                userid: dataUser.id,
+                name: dataUser.name,
+                dni: dataUser.dni,
+                client_id: dataUser.client_id,
+                seller: dataUser.seller,
+                address: dataUser.address,
                 color: dataUser.color,
-                org: dataUser.organization[0].organization,
-                society: dataUser.organization[0].society,
-                organization: dataUser.organization,
-                multibasket: dataUser.multibasket === '1',
+                org: dataUser.company,
+                zone: dataUser.zone,
                 versionCurrent: versionCurrent(),
                 timewake: (new Date()).getTime(),
               };
@@ -96,7 +98,6 @@ export default {
               this.$store.dispatch('StoreProfile/setLogin', true);
 
               saveSessionInDB(dataProfile);
-
               window.location.reload(true);
             } else {
               this.alert('El usuario/clave es incorrecto', 'warning');

@@ -15,7 +15,7 @@
           v-if="!showCaption"
           v-model="search"
           style="margin:2px 2px auto 8px;"
-          label="search"
+          label="Buscar producto"
           type="search"
           hide-details rounded dense solo-inverted
           prepend-inner-icon="mdi-magnify"

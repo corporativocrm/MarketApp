@@ -58,7 +58,7 @@
                 <v-container>
                   <v-textarea
                     v-model="getAnswerItem"
-                    outlined rows="2" row-height="20"
+                    outlined rows="3" row-height="20"
                     label="RESPUESTA"
                     :readonly="dataNotifi[viewNotify].answer.guid !== undefined"
                   ></v-textarea>

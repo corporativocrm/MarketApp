@@ -71,7 +71,9 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn outlined rounded large elevation="4" color="primary">
+            <v-btn
+              outlined rounded large elevation="4" color="primary"
+              @click="createQuotation()">
               Cotizar
             </v-btn>
           </v-card-actions>
@@ -85,22 +87,35 @@
 <script>
 // eslint-disable-next-line import/extensions
 import { mapMutations, mapState } from 'vuex';
+// eslint-disable-next-line import/extensions
+import { sendOrder } from '../../config/api/catalogue';
 
 export default {
   data() {
     return {
       listShopcart: [],
+      sendingQuotation: false,
     };
-  },
-  components: {
   },
   computed: {
     ...mapState('menu', ['shopcart']),
     ...mapState('StoreProfile', ['profile']),
+    ...mapState('mensaje', ['value']),
 
     showForm: {
       get() {
         return this.shopcart;
+      },
+    },
+
+    conditionSendQuotation: {
+      get() {
+        return this.value;
+      },
+    },
+    flagCondition: {
+      get() {
+        return this.condition;
       },
     },
 
@@ -111,7 +126,7 @@ export default {
           const mount = list.reduce((a, e) => a + (parseInt(e.quantity, 10) * parseFloat(e.price)), 0);
           return list[0].coin.concat(' ', mount.toFixed(2));
         }
-        return '$0';
+        return 'USD 0';
       },
     },
   },
@@ -128,8 +143,49 @@ export default {
       }
     },
 
+    createQuotation() {
+      if (localStorage.getItem('listCartShop') != null) {
+        this.sendingQuotation = true;
+        localStorage.setItem('alert-condition-param-path', 'order');
+        this.alertCondition('¿Enviar solicitud de cotización?');
+      }
+    },
+
+    createOrder() {
+      const mount = this.listShopcart.reduce((a, e) => a + (parseInt(e.quantity, 10) * parseFloat(e.price)), 0);
+      return {
+        client: {
+          name: this.profile.name,
+          code: this.profile.dni,
+          address: this.profile.address,
+        },
+        creator: this.profile.seller,
+        order: {
+          iva: 0,
+          subtotal: 0,
+          total: mount,
+          observation: 'Pedido desde el Market',
+          transport: 'Cliente',
+          retention: 0,
+          offert: 1,
+          coin: this.listShopcart[0].coin,
+          organization: this.profile.org,
+          paymentCondition: 'Contado',
+          saleCondition: '',
+        },
+        products: this.listShopcart,
+        quotation: 1,
+        market: 1,
+        date: (new Date()).getTime(),
+      };
+    },
+
     alert(message, type = 'info') {
       this.$store.dispatch('mensaje/push', [message, type]);
+    },
+
+    alertCondition(message) {
+      this.$store.dispatch('mensaje/condition', message);
     },
   },
 
@@ -139,6 +195,34 @@ export default {
         const list = localStorage.getItem('listCartShop');
         if (list != null) {
           this.listShopcart = JSON.parse(list);
+        }
+      },
+    },
+    conditionSendQuotation: {
+      async handler() {
+        const resp = await this.$store.dispatch('mensaje/getResponse', 'order');
+        if (resp) {
+          const list = localStorage.getItem('listCartShop');
+          if (list != null) {
+            if (navigator.onLine) {
+              this.listShopcart = JSON.parse(list);
+              const order = this.createOrder();
+              const response = await sendOrder(JSON.stringify(order));
+
+              if (response.data.response.status) {
+                this.listShopcart.splice(0, this.listShopcart.lenght);
+                localStorage.removeItem('listCartShop');
+                this.alert('La solicitud de cotización ha sido enviada', 'success');
+              } else {
+                this.alert('La señal es inestable, no logro subir la cotización intente más tarde', 'warning');
+              }
+            } else {
+              this.alert('Asegurese de estar conectado a una red con internet', 'warning');
+            }
+            localStorage.removeItem('alert-condition-param-path');
+          }
+        } else if (resp !== null) {
+          localStorage.removeItem('alert-condition-param-path');
         }
       },
     },

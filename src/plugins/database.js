@@ -3,7 +3,7 @@ import Dexie from 'dexie';
 const DB = new Dexie('clientMaferca');
 
 DB.version(1).stores({
-  session: '++guid,color,multibasket,name,org,organization,rol,timewake,userid,versionCurrent',
+  session: '++guid, name, dni, client_id, seller, address, color, org, versionCurrent, timewake',
 });
 
 async function resetDB() {

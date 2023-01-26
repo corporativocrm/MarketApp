@@ -12,6 +12,7 @@ export default {
     MOSTRAR(state) {
       if (state.mensaje.length && state.mensaje !== null && state.tipo.length) {
         state.showModalAlert = !state.showModalAlert;
+        if (state.showModalAlert) state.value = null;
       }
     },
     MENSAJE(state, payload) {
@@ -39,8 +40,16 @@ export default {
       commit('MOSTRAR');
     },
 
-    condition({ commit }, caption) {
-      commit('MENSAJE', caption);
+    getResponse({ state }, param) {
+      const path = localStorage.getItem('alert-condition-param-path');
+      if (path !== null && path === param) {
+        return state.value;
+      }
+      return null;
+    },
+
+    condition({ commit }, param) {
+      commit('MENSAJE', param);
       commit('TIPO', 'info');
       commit('MODE', true);
       commit('MOSTRAR');

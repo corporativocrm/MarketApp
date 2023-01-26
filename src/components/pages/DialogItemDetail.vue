@@ -73,7 +73,7 @@
                   <v-col cols="6">
                     <v-text-field
                       v-model="quantity"
-                      style="margin:2px 2px auto 8px;"
+                      style="margin:4px 2px auto 8px;"
                       class="pa-0"
                       label="search"
                       type="search"
@@ -181,11 +181,18 @@ export default {
       const item = {
         name: this.itemView.name,
         code: this.itemView.code,
+        salecenter: this.itemView.center,
         image: this.getImage,
         quantity: this.quantity,
+        weight: this.itemView.weight,
+        warehouse: this.itemView.warehouse,
+        unit: this.itemView.unit,
+        pricelist: this.itemView.price.name,
         coin: this.itemView.price.coin,
         price: this.itemView.price.price,
         brand: this.itemView.brand,
+        pricelist_id: this.itemView.price.id,
+        condition_sale: this.itemView.price.terms,
       };
 
       if (list != null) {

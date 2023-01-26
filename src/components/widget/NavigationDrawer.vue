@@ -10,12 +10,12 @@
     <template v-slot:prepend>
       <v-list-item dark two-line :style='"background-color:"+profile.color'>
         <v-list-item-avatar>
-          <img src="https://randomuser.me/api/portraits/women/81.jpg">
+          <v-icon dark x-large>mdi-account-circle</v-icon>
         </v-list-item-avatar>
 
         <v-list-item-content>
-          <v-list-item-title>Jane Smith</v-list-item-title>
-          <v-list-item-subtitle>Logged In</v-list-item-subtitle>
+          <v-list-item-title>{{profile.name}}</v-list-item-title>
+          <v-list-item-subtitle>{{profile.dni}}</v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
     </template>
@@ -119,7 +119,6 @@ export default {
         return this.value;
       },
     },
-
     showDrawer: {
       get() { return this.drawer; },
       set(param) {
@@ -133,7 +132,8 @@ export default {
 
     Logout() {
       this.closeProfile = true;
-      this.condition('¿Seguro que desea cerrar sesión?');
+      localStorage.setItem('alert-condition-param-path', 'logout');
+      this.alertCondition('¿Seguro que desea cerrar sesión?');
     },
 
     countNotify() {
@@ -161,7 +161,7 @@ export default {
       this.SHOPCART(true);
     },
 
-    condition(message) {
+    async alertCondition(message) {
       this.showDrawer = false;
       this.$store.dispatch('mensaje/condition', message);
     },
@@ -178,14 +178,17 @@ export default {
       },
     },
     conditionLogout: {
-      handler(r) {
-        if (r && this.closeProfile) {
+      async handler() {
+        const resp = await this.$store.dispatch('mensaje/getResponse', 'logout');
+        if (resp) {
           // BORRAR TODO
           localStorage.clear();
           DB.delete();
+          localStorage.removeItem('alert-condition-param-path');
           window.location.reload();
+        } else if (resp !== null) {
+          localStorage.removeItem('alert-condition-param-path');
         }
-        this.closeProfile = false;
       },
     },
   },

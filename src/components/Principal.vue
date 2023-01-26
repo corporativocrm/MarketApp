@@ -65,7 +65,7 @@ import DialogCatalogue from './pages/DialogCatalogue';
 // eslint-disable-next-line import/extensions
 import DialogMessage from './pages/DialogMessage';
 // eslint-disable-next-line import/extensions
-import DialogDetail from './pages/Catalogue/DialogDetail';
+import DialogDetail from './pages/DialogItemDetail';
 // eslint-disable-next-line import/extensions
 import NavigationDrawer from './widget/NavigationDrawer';
 

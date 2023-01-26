@@ -266,7 +266,10 @@ export default {
       get() {
         if (this.index.length) {
           const count = this.index.reduce((a, c) => a + parseInt(c.cnt, 10), 0);
-          return this.index[this.page - 1].cnt.toString().concat('/', count);
+          const current = this.index[this.page - 1].cnt.toString();
+          const mount = this.index.slice(0, this.page).reduce((a, c) => a + parseInt(c.cnt, 10), 0);
+
+          return parseInt((mount - current), 10).toString().concat('-', mount, '/', count);
         }
         return '0/0';
       },
