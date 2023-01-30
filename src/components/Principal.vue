@@ -52,6 +52,7 @@
     <DialogCatalogue/>
     <DialogShopcart/>
     <DialogDetail/>
+    <DialogSales/>
   </v-container>
 </template>
 
@@ -66,6 +67,8 @@ import DialogCatalogue from './pages/DialogCatalogue';
 import DialogMessage from './pages/DialogMessage';
 // eslint-disable-next-line import/extensions
 import DialogDetail from './pages/DialogItemDetail';
+// eslint-disable-next-line import/extensions
+import DialogSales from './pages/DialogSales';
 // eslint-disable-next-line import/extensions
 import NavigationDrawer from './widget/NavigationDrawer';
 
@@ -120,7 +123,7 @@ export default {
   }),
 
   components: {
-    NavigationDrawer, DialogShopcart, DialogCatalogue, DialogMessage, DialogDetail,
+    NavigationDrawer, DialogShopcart, DialogCatalogue, DialogMessage, DialogDetail, DialogSales,
   },
   computed: {
     ...mapState('StoreProfile', ['profile']),

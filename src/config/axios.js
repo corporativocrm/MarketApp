@@ -19,9 +19,8 @@ function DriverAxios() {
       return {
         ...{
           session: {
-            user_id: this.profile.userid,
-            session_key: this.profile.sesionkey,
-            society: this.profile.society,
+            dni: this.profile.dni,
+            seller: this.profile.seller,
             organization: this.profile.org,
             route_current: 'app',
             origin: 'app',

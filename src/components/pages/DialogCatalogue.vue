@@ -3,6 +3,7 @@
     <v-dialog
       v-model="showForm"
       fullscreen persistent hide-overlay
+      :no-click-animation="true"
       transition="dialog-bottom-transition">
       <v-card>
       <v-container

@@ -22,74 +22,82 @@
 
     <v-divider></v-divider>
 
-    <v-list nav dense>
+    <v-list>
+      <v-list-item-group>
+        <v-list-item
+          @click="goHome()" style="height:40px">
+          <v-list-item-title class="subtitle-1">
+            <v-icon :color="profile.color"
+            style="font-size:1.7rem;">mdi-home-outline</v-icon>
+              Inicio
+          </v-list-item-title>
+        </v-list-item>
 
-      <v-list-item
-        @click="goHome()">
-        <v-list-item-title class="subtitle-1">
-          <v-icon :color="profile.color"
-           style="font-size:1.7rem;">mdi-home-outline</v-icon>
-            Inicio
-        </v-list-item-title>
-      </v-list-item>
+        <v-list-item v-if="!catalogue && products.length"
+          @click="openCatalogue()">
+          <v-list-item-title class="subtitle-1">
+            <v-icon :color="profile.color"
+              style="font-size:1.7rem;"> mdi-star-outline</v-icon>
+              Catalogo
+          </v-list-item-title>
+        </v-list-item>
 
-      <v-list-item v-if="!catalogue && products.length"
-        @click="openCatalogue()">
-        <v-list-item-title class="subtitle-1">
-          <v-icon :color="profile.color"
-            style="font-size:1.7rem;"> mdi-star-outline</v-icon>
-            Catalogo
-        </v-list-item-title>
-      </v-list-item>
+        <v-list-item>
+          <v-list-item-title @click="openNotify()" class="subtitle-1">
+            <v-badge
+              v-if="dataNotifi.length > 0"
+              :content="countNotify()"
+              :color="profile.color"
+              overlap>
+              <v-icon :color="profile.color">mdi-message-outline</v-icon>
+            </v-badge>
+            <v-icon v-else :color="profile.color">mdi-message-outline</v-icon>
+              Mensajes
+          </v-list-item-title>
+        </v-list-item>
 
-      <v-list-item class="mt-1">
-        <v-list-item-title @click="openNotify()" class="subtitle-1">
-          <v-badge
-            v-if="dataNotifi.length > 0"
-            :content="countNotify()"
-            :color="profile.color"
-            overlap>
-            <v-icon :color="profile.color">mdi-message-outline</v-icon>
-          </v-badge>
-          <v-icon v-else :color="profile.color">mdi-message-outline</v-icon>
-            Mensajes
-        </v-list-item-title>
-      </v-list-item>
+        <v-list-item class="mt-3" style="height:40px">
+          <v-list-item-title class="subtitle-1">
+            <v-icon :color="profile.color">mdi-heart-outline</v-icon>
+              Favoritos
+          </v-list-item-title>
+        </v-list-item>
 
-      <v-list-item class="mt-4">
-        <v-list-item-title class="subtitle-1">
-          <v-icon :color="profile.color">mdi-heart-outline</v-icon>
-            Favoritos
-        </v-list-item-title>
-      </v-list-item>
+        <v-list-item style="height:40px">
+          <v-list-item-title @click="openShopCart()" class="subtitle-1">
+            <v-badge
+              v-if="qtyCartshop > 0"
+              :content="qtyCartshop"
+              :color="profile.color"
+              overlap>
+              <v-icon :color="profile.color">mdi-cart-outline</v-icon>
+            </v-badge>
+            <v-icon v-else :color="profile.color">mdi-cart-outline</v-icon>
+              Mi carrito
+          </v-list-item-title>
+        </v-list-item>
 
-      <v-list-item class="mt-1">
-        <v-list-item-title @click="openShopCart()" class="subtitle-1">
-          <v-badge
-            v-if="qtyCartshop > 0"
-            :content="qtyCartshop"
-            :color="profile.color"
-            overlap>
-            <v-icon :color="profile.color">mdi-cart-outline</v-icon>
-          </v-badge>
-          <v-icon v-else :color="profile.color">mdi-cart-outline</v-icon>
-            Mi carrito
-        </v-list-item-title>
-      </v-list-item>
+        <v-list-item style="height:30px">
+          <v-list-item-title class="subtitle-1" @click="openOrders()">
+            <v-badge
+              v-if="orders.length > 0"
+              :content="countOrders()"
+              :color="profile.color"
+              overlap>
+              <v-icon :color="profile.color">mdi-gift-outline</v-icon>
+            </v-badge>
+            <v-icon v-else :color="profile.color">mdi-gift-outline</v-icon>
+              Mis compras
+          </v-list-item-title>
+        </v-list-item>
 
-      <v-list-item class="mt-4">
-        <v-list-item-title class="subtitle-1">
-          <v-icon :color="profile.color">mdi-gift-outline</v-icon>
-            Mis compras
-        </v-list-item-title>
-      </v-list-item>
-
-      <v-list-item class="mt-3">
-        <v-list-item-title @click="Logout()" class="subtitle-1">
-          <v-icon :color="profile.color">mdi-logout-variant</v-icon>
-            Cerrar Sesión
-        </v-list-item-title>
-      </v-list-item>
+        <v-list-item class="mt-3" style="height:40px">
+          <v-list-item-title @click="Logout()" class="subtitle-1">
+            <v-icon :color="profile.color">mdi-logout-variant</v-icon>
+              Cerrar Sesión
+          </v-list-item-title>
+        </v-list-item>
+      </v-list-item-group>
     </v-list>
   </v-navigation-drawer>
 </template>
@@ -111,7 +119,7 @@ export default {
     ...mapState('StoreProfile', ['profile']),
     ...mapState('navigationDrawer', ['drawer']),
     ...mapState('notifications', ['dataNotifi']),
-    ...mapState('catalogue', ['products']),
+    ...mapState('catalogue', ['products', 'orders']),
     ...mapState('mensaje', ['value']),
 
     conditionLogout: {
@@ -128,7 +136,7 @@ export default {
   },
   methods: {
     ...mapActions('navigationDrawer', ['toggleDrawer']),
-    ...mapMutations('menu', ['HOME', 'CATALOGUE', 'SHOPCART', 'MESSAGE']),
+    ...mapMutations('menu', ['HOME', 'CATALOGUE', 'SHOPCART', 'MESSAGE', 'ORDERS']),
 
     Logout() {
       this.closeProfile = true;
@@ -138,6 +146,11 @@ export default {
 
     countNotify() {
       const qty = this.dataNotifi.filter((e) => e.view === false).length;
+      return qty > 99 ? '+99' : qty;
+    },
+
+    countOrders() {
+      const qty = this.orders.length;
       return qty > 99 ? '+99' : qty;
     },
 
@@ -161,10 +174,18 @@ export default {
       this.SHOPCART(true);
     },
 
+    openOrders() {
+      this.showDrawer = false;
+      this.ORDERS(true);
+    },
+
     async alertCondition(message) {
       this.showDrawer = false;
       this.$store.dispatch('mensaje/condition', message);
     },
+  },
+  async beforeMount() {
+    await this.$store.dispatch('catalogue/getOrders');
   },
 
   watch: {

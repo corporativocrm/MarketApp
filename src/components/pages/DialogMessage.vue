@@ -3,6 +3,7 @@
     <v-dialog
     content-class="mt-12"
     persistent fullscreen
+    :no-click-animation="true"
     origin="center center"
     v-model="showDialogMessage"
     transition="dialog-bottom-transition">

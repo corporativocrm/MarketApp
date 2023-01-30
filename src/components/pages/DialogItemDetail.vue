@@ -4,6 +4,7 @@
       :retain-focus="false"
       v-model="showForm"
       content-class="mt-10"
+      :no-click-animation="true"
       persistent max-width="95%">
       <v-card>
 

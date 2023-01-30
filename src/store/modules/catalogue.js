@@ -1,4 +1,4 @@
-import { getIndex, getProducts } from '../../config/api/catalogue';
+import { getIndex, getProducts, getOrder } from '../../config/api/catalogue';
 
 export default {
   name: 'catalogue',
@@ -10,6 +10,7 @@ export default {
     itemView: null,
     querySearch: '',
     catalogueLoaded: false,
+    orders: [],
   },
 
   mutations: {
@@ -22,6 +23,9 @@ export default {
     SET_PRODUCTS(state, param) {
       state.products = param.data.response;
       state.catalogueLoaded = true;
+    },
+    SET_ORDERS(state, param) {
+      state.orders = param.data.response;
     },
   },
 
@@ -42,6 +46,9 @@ export default {
         commit('SET_INDEX', await getIndex({ data: JSON.stringify(param) }));
         commit('SET_PRODUCTS', await getProducts({ data: JSON.stringify(param) }));
       }
+    },
+    async getOrders({ commit }) {
+      commit('SET_ORDERS', await getOrder());
     },
   },
 };
