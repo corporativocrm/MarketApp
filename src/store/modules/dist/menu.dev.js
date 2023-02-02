@@ -1,75 +1,73 @@
-export default {
+"use strict";
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = void 0;
+var _default = {
   name: 'footerMenu',
-
   namespaced: true,
-
   state: {
-
     catalogue: false,
-
     shopcart: false,
-
     showDialogMessage: false,
-
     dialogOrders: false,
-
-    dialogFavorite: false,
+    dialogFavorite: false
   },
   mutations: {
-
-    HOME(state) {
+    HOME: function HOME(state) {
       state.catalogue = false;
       state.shopcart = false;
       state.showDialogMessage = false;
       state.dialogOrders = false;
       state.dialogFavorite = false;
     },
-
-    CATALOGUE(state, param = null) {
+    CATALOGUE: function CATALOGUE(state) {
+      var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
       state.catalogue = param != null ? param : !state.catalogue;
       state.shopcart = false;
       state.showDialogMessage = false;
       state.dialogOrders = false;
       state.dialogFavorite = false;
     },
-
-    FAVORITE(state, param = null) {
+    FAVORITE: function FAVORITE(state) {
+      var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
       state.dialogFavorite = param != null ? param : !state.dialogFavorite;
       state.catalogue = false;
       state.shopcart = false;
       state.showDialogMessage = false;
       state.dialogOrders = false;
     },
-
-    SHOPCART(state, param = null) {
+    SHOPCART: function SHOPCART(state) {
+      var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
       state.shopcart = param != null ? param : !state.shopcart;
       state.catalogue = false;
       state.showDialogMessage = false;
       state.dialogOrders = false;
       state.dialogFavorite = false;
     },
-
-    MESSAGE(state, param = null) {
+    MESSAGE: function MESSAGE(state) {
+      var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
       state.showDialogMessage = param != null ? param : !state.showDialogMessage;
       state.shopcart = false;
       state.catalogue = false;
       state.dialogOrders = false;
       state.dialogFavorite = false;
     },
-
-    ORDERS(state, param = null) {
+    ORDERS: function ORDERS(state) {
+      var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
       state.dialogOrders = param != null ? param : !state.dialogOrders;
       state.shopcart = false;
       state.catalogue = false;
       state.showDialogMessage = false;
       state.dialogFavorite = false;
-    },
+    }
   },
   actions: {
-    toggleFormModalNotify({ state }) {
+    toggleFormModalNotify: function toggleFormModalNotify(_ref) {
+      var state = _ref.state;
       state.showDialogMessage = !state.showDialogMessage;
-    },
-  },
-
+    }
+  }
 };
+exports["default"] = _default;

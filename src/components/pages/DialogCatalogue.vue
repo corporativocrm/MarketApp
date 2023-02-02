@@ -73,6 +73,7 @@
         <v-card
           v-for="(item, index) in products"
           :key="index"
+          transition="none"
           class="mx-auto pa-0 mt-4"
           color="white"
           @click="openDetail(item)"
@@ -100,9 +101,8 @@
               </template>
                 <v-btn fab light small absolute
                   style="top:2px;right:2px;opacity:0.6 !important;"
-                  @click.stop="favorite(index)"
-                >
-                  <v-icon color="blue">mdi-heart-outline</v-icon>
+                  @click.stop="favorite(index)">
+                  <v-icon color="blue">mdi-heart{{item.detail.favorite ? '':'-outline'}}</v-icon>
                 </v-btn>
               </v-img>
             </v-col>
@@ -127,8 +127,7 @@
           v-model="page"
           :length="index.length"
           :total-visible="5"
-          @next="changePage()"
-          @previous="changePage()"
+          @input="changePage"
           circle
         ></v-pagination>
       </div>
@@ -219,6 +218,7 @@ export default {
   data() {
     return {
       page: 1,
+      currentPage: 1,
       query: '',
       modalMenuFilters: false,
       modalFilters: false,
@@ -301,7 +301,12 @@ export default {
     ...mapActions('catalogue', ['toggleFormDetail', 'setItemView']),
 
     favorite(index) {
-      return index;
+      const item = this.products[index];
+      this.$store.dispatch('catalogue/favorite', {
+        position: index,
+        code: item.id,
+        status: !item.detail.favorite,
+      });
     },
 
     openDetail(e) {
@@ -329,12 +334,15 @@ export default {
       this.modalFilters = !this.modalFilters;
     },
 
-    changePage() {
-      this.modalLoading = true;
-      this.filters.range = this.index[this.page - 1];
-      this.$store.dispatch('catalogue/QuerySearch', { query: this.querySearch, filters: this.filters }).finally(() => {
-        this.modalLoading = false;
-      });
+    changePage(page) {
+      if (this.currentPage !== page) {
+        this.modalLoading = true;
+        this.filters.range = this.index[page - 1];
+        this.$store.dispatch('catalogue/QuerySearch', { query: this.querySearch, filters: this.filters }).finally(() => {
+          this.modalLoading = false;
+          this.currentPage = page;
+        });
+      }
     },
 
     resetFilters() {

@@ -37,13 +37,13 @@ export default {
     search: '',
   }),
   computed: {
-    ...mapState('menu', ['showDialogMessage', 'shopcart', 'dialogOrders']),
+    ...mapState('menu', ['showDialogMessage', 'shopcart', 'dialogOrders', 'dialogFavorite']),
     ...mapState('StoreProfile', ['profile']),
     ...mapState('WebServices', ['preload', 'loading']),
 
     showCaption: {
       get() {
-        return this.showDialogMessage || this.shopcart || this.dialogOrders;
+        return this.showDialogMessage || this.shopcart || this.dialogOrders || this.dialogFavorite;
       },
     },
 
@@ -52,6 +52,7 @@ export default {
         if (this.showDialogMessage) return 'Mensajes';
         if (this.shopcart) return 'Mi carrito';
         if (this.dialogOrders) return 'Mis ordenes';
+        if (this.dialogFavorite) return 'Favoritos';
         return '';
       },
     },

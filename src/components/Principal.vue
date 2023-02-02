@@ -50,6 +50,7 @@
 
     <DialogMessage/>
     <DialogCatalogue/>
+    <DialogFavorite/>
     <DialogShopcart/>
     <DialogDetail/>
     <DialogSales/>
@@ -69,6 +70,8 @@ import DialogMessage from './pages/DialogMessage';
 import DialogDetail from './pages/DialogItemDetail';
 // eslint-disable-next-line import/extensions
 import DialogSales from './pages/DialogSales';
+// eslint-disable-next-line import/extensions
+import DialogFavorite from './pages/DialogFavorite';
 // eslint-disable-next-line import/extensions
 import NavigationDrawer from './widget/NavigationDrawer';
 
@@ -123,7 +126,13 @@ export default {
   }),
 
   components: {
-    NavigationDrawer, DialogShopcart, DialogCatalogue, DialogMessage, DialogDetail, DialogSales,
+    NavigationDrawer,
+    DialogShopcart,
+    DialogCatalogue,
+    DialogMessage,
+    DialogDetail,
+    DialogSales,
+    DialogFavorite,
   },
   computed: {
     ...mapState('StoreProfile', ['profile']),
@@ -138,12 +147,11 @@ export default {
       this.toggleFormDetail();
     },
   },
-  async mounted() {
-    setInterval(() => {
-      if (navigator.onLine) {
-        this.$store.dispatch('notifications/getAllNotifications');
-      }
-    }, 60000); // 1 Min
+  mounted() {
+    // descargar mensajes
+    if (navigator.onLine) {
+      this.$store.dispatch('notifications/getAllNotifications');
+    }
   },
 };
 </script>

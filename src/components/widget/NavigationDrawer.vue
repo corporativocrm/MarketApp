@@ -43,7 +43,7 @@
         </v-list-item>
 
         <v-list-item>
-          <v-list-item-title @click="openNotify()" class="subtitle-1">
+          <v-list-item-title @click="openMessage()" class="subtitle-1">
             <v-badge
               v-if="dataNotifi.length > 0"
               :content="countNotify()"
@@ -57,7 +57,7 @@
         </v-list-item>
 
         <v-list-item class="mt-3" style="height:40px">
-          <v-list-item-title class="subtitle-1">
+          <v-list-item-title @click="openFavorite()" class="subtitle-1">
             <v-icon :color="profile.color">mdi-heart-outline</v-icon>
               Favoritos
           </v-list-item-title>
@@ -136,7 +136,14 @@ export default {
   },
   methods: {
     ...mapActions('navigationDrawer', ['toggleDrawer']),
-    ...mapMutations('menu', ['HOME', 'CATALOGUE', 'SHOPCART', 'MESSAGE', 'ORDERS']),
+    ...mapMutations('menu', [
+      'HOME',
+      'CATALOGUE',
+      'SHOPCART',
+      'MESSAGE',
+      'ORDERS',
+      'FAVORITE',
+    ]),
 
     Logout() {
       this.closeProfile = true;
@@ -164,7 +171,7 @@ export default {
       this.CATALOGUE(true);
     },
 
-    openNotify() {
+    openMessage() {
       this.showDrawer = false;
       this.MESSAGE(true);
     },
@@ -177,6 +184,11 @@ export default {
     openOrders() {
       this.showDrawer = false;
       this.ORDERS(true);
+    },
+
+    openFavorite() {
+      this.showDrawer = false;
+      this.FAVORITE(true);
     },
 
     async alertCondition(message) {

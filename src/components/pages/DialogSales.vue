@@ -8,7 +8,7 @@
       <v-card light>
         <v-row dense class="pa-2">
           <div style="overflow-y:auto;min-height:90vh;max-height:92vh;width:100%">
-            <div v-if="viewOrder < 0" class="pt-1">
+            <div v-if="viewOrder == null" class="pt-1">
               <v-subheader class="font-weight-light">Ordenes en espera</v-subheader>
               <template v-for="(item) in ordersWaiting">
                 <v-card
@@ -74,7 +74,7 @@
               <v-subheader class="font-weight-light">
                 Lista de artículos
                 <v-spacer></v-spacer>
-                <v-btn elevation="2" small rounded outlined color="warning" @click="view(-1)">Volver</v-btn>
+                <v-btn elevation="2" small rounded outlined color="warning" @click="view(null)">Volver</v-btn>
               </v-subheader>
               <template v-for="(item) in viewOrder.products">
                 <v-card
@@ -82,7 +82,7 @@
                   elevation="4"
                   max-width="344" outlined>
                   <v-card-title class="px-4 pt-1 pb-0">
-                    <span class="blue--text">SKU: {{item.sku}}</span>
+                    <span class="green--text">SKU: {{item.sku}}</span>
                     <v-spacer></v-spacer>
                     {{parseFloat(item.price * item.quantity).toFixed(2).concat(' USD')}}
                   </v-card-title>
@@ -126,7 +126,7 @@ import { mapState } from 'vuex';
 export default {
   name: 'dialogSales',
   data: () => ({
-    viewOrder: {},
+    viewOrder: null,
     answer: '',
   }),
   computed: {

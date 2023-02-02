@@ -5,7 +5,7 @@
     persistent fullscreen
     :no-click-animation="true"
     origin="center center"
-    v-model="showDialogMessage"
+    v-model="showForm"
     transition="dialog-bottom-transition">
       <v-card>
         <v-row dense class="pa-2">
@@ -123,15 +123,22 @@
 import { mapState, mapActions } from 'vuex';
 
 export default {
-  name: 'modalNotify',
+  name: 'DialogMessage',
   data: () => ({
     viewNotify: -1,
     answer: '',
+    idTimer: -1,
   }),
   computed: {
     ...mapState('menu', ['showDialogMessage']),
     ...mapState('StoreProfile', ['profile']),
     ...mapState('notifications', ['dataNotifi']),
+
+    showForm: {
+      get() {
+        return this.showDialogMessage;
+      },
+    },
 
     getAnswerItem: {
       get() {
@@ -185,6 +192,27 @@ export default {
 
     alert(message, type = 'info') {
       this.$store.dispatch('mensaje/push', [message, type]);
+    },
+  },
+  watch: {
+    showForm: {
+      handler(show) {
+        if (show) {
+          // Forzar la descarga
+          if (navigator.onLine) {
+            this.$store.dispatch('notifications/getAllNotifications');
+          }
+          // Activar recurrencia
+          this.idTimer = setInterval(() => {
+            if (navigator.onLine) {
+              this.$store.dispatch('notifications/getAllNotifications');
+            }
+          }, 30000); // 30 Sec
+        } else {
+          // Desactivar recurrencia
+          clearInterval(this.idTimer);
+        }
+      },
     },
   },
 };
