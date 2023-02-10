@@ -29,7 +29,7 @@
           <v-list-item-title class="subtitle-1">
             <v-icon :color="profile.color"
             style="font-size:1.7rem;">mdi-home-outline</v-icon>
-              Inicio
+              <span class="ml-4">Inicio</span>
           </v-list-item-title>
         </v-list-item>
 
@@ -38,32 +38,39 @@
           <v-list-item-title class="subtitle-1">
             <v-icon :color="profile.color"
               style="font-size:1.7rem;"> mdi-star-outline</v-icon>
-              Catalogo
+              <span class="ml-4">Catalogo</span>
           </v-list-item-title>
         </v-list-item>
 
         <v-list-item>
           <v-list-item-title @click="openMessage()" class="subtitle-1">
             <v-badge
-              v-if="dataNotifi.length > 0"
-              :content="countNotify()"
+              v-if="countMessage() > 0"
+              :content="countMessage()"
               :color="profile.color"
               overlap>
               <v-icon :color="profile.color">mdi-message-outline</v-icon>
             </v-badge>
             <v-icon v-else :color="profile.color">mdi-message-outline</v-icon>
-              Mensajes
+              <span class="ml-4">Mensajes</span>
           </v-list-item-title>
         </v-list-item>
 
         <v-list-item class="mt-3" style="height:40px">
           <v-list-item-title @click="openFavorite()" class="subtitle-1">
-            <v-icon :color="profile.color">mdi-heart-outline</v-icon>
-              Favoritos
+            <v-badge
+              v-if="favorites.length > 0"
+              :content="countFavorites()"
+              :color="profile.color"
+              overlap>
+              <v-icon :color="profile.color">mdi-heart-outline</v-icon>
+            </v-badge>
+            <v-icon v-else :color="profile.color">mdi-heart-outline</v-icon>
+              <span class="ml-4">Favoritos</span>
           </v-list-item-title>
         </v-list-item>
 
-        <v-list-item style="height:40px">
+        <v-list-item class="mt-2">
           <v-list-item-title @click="openShopCart()" class="subtitle-1">
             <v-badge
               v-if="qtyCartshop > 0"
@@ -73,28 +80,21 @@
               <v-icon :color="profile.color">mdi-cart-outline</v-icon>
             </v-badge>
             <v-icon v-else :color="profile.color">mdi-cart-outline</v-icon>
-              Mi carrito
+              <span class="ml-4">Mi carrito</span>
           </v-list-item-title>
         </v-list-item>
 
         <v-list-item style="height:30px">
           <v-list-item-title class="subtitle-1" @click="openOrders()">
-            <v-badge
-              v-if="orders.length > 0"
-              :content="countOrders()"
-              :color="profile.color"
-              overlap>
-              <v-icon :color="profile.color">mdi-gift-outline</v-icon>
-            </v-badge>
-            <v-icon v-else :color="profile.color">mdi-gift-outline</v-icon>
-              Mis compras
+            <v-icon :color="profile.color">mdi-gift-outline</v-icon>
+            <span class="ml-4">Mis compras</span>
           </v-list-item-title>
         </v-list-item>
 
         <v-list-item class="mt-3" style="height:40px">
           <v-list-item-title @click="Logout()" class="subtitle-1">
             <v-icon :color="profile.color">mdi-logout-variant</v-icon>
-              Cerrar Sesión
+              <span class="ml-4">Cerrar Sesión</span>
           </v-list-item-title>
         </v-list-item>
       </v-list-item-group>
@@ -118,8 +118,8 @@ export default {
     ...mapState('menu', ['catalogue']),
     ...mapState('StoreProfile', ['profile']),
     ...mapState('navigationDrawer', ['drawer']),
-    ...mapState('notifications', ['dataNotifi']),
-    ...mapState('catalogue', ['products', 'orders']),
+    ...mapState('messenger', ['messageList']),
+    ...mapState('catalogue', ['products', 'favorites', 'orders']),
     ...mapState('mensaje', ['value']),
 
     conditionLogout: {
@@ -136,6 +136,7 @@ export default {
   },
   methods: {
     ...mapActions('navigationDrawer', ['toggleDrawer']),
+    ...mapActions('catalogue', ['hideFormDetail']),
     ...mapMutations('menu', [
       'HOME',
       'CATALOGUE',
@@ -151,53 +152,58 @@ export default {
       this.alertCondition('¿Seguro que desea cerrar sesión?');
     },
 
-    countNotify() {
-      const qty = this.dataNotifi.filter((e) => e.view === false).length;
+    countMessage() {
+      const qty = this.messageList.filter((e) => parseInt(e.view, 10) === 0).length;
       return qty > 99 ? '+99' : qty;
     },
 
-    countOrders() {
-      const qty = this.orders.length;
+    countFavorites() {
+      const qty = this.favorites.length;
       return qty > 99 ? '+99' : qty;
+    },
+
+    control() {
+      this.showDrawer = false;
+      this.hideFormDetail();
     },
 
     goHome() {
-      this.showDrawer = false;
       this.HOME(true);
+      this.control();
     },
 
     openCatalogue() {
-      this.showDrawer = false;
       this.CATALOGUE(true);
+      this.control();
     },
 
     openMessage() {
-      this.showDrawer = false;
       this.MESSAGE(true);
+      this.control();
     },
 
     openShopCart() {
-      this.showDrawer = false;
       this.SHOPCART(true);
+      this.control();
     },
 
     openOrders() {
-      this.showDrawer = false;
       this.ORDERS(true);
+      this.control();
     },
 
     openFavorite() {
-      this.showDrawer = false;
       this.FAVORITE(true);
+      this.control();
     },
 
     async alertCondition(message) {
-      this.showDrawer = false;
+      this.control();
       this.$store.dispatch('mensaje/condition', message);
     },
   },
   async beforeMount() {
-    await this.$store.dispatch('catalogue/getOrders');
+    // --
   },
 
   watch: {

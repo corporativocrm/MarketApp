@@ -92,14 +92,24 @@
         </v-row>
 
         <v-card-actions class="mb-4">
-          <v-btn rounded color="red" outlined @click="close()"> Cerrar</v-btn>
+          <v-btn rounded color="red" outlined @click="close()"> CERRAR</v-btn>
+          <v-spacer></v-spacer>
+          <v-btn
+            outlined
+            rounded
+            small
+            color="teal"
+            @click="openMessage()"
+          >
+            MENSAJE
+          </v-btn>
           <v-spacer></v-spacer>
           <v-btn
             rounded
             color="primary"
             :disabled="disabled"
             @click="addToCart()">
-            Agregar
+            AGREGAR
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -108,7 +118,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapMutations, mapActions } from 'vuex';
 
 export default {
   name: 'detail-product',
@@ -163,10 +173,18 @@ export default {
     },
   },
   methods: {
-    ...mapActions('catalogue', ['toggleFormDetail']),
+    ...mapActions('catalogue', ['toggleFormDetail', 'setItemView']),
+    ...mapMutations('menu', ['MESSAGE']),
 
     close() {
       this.toggleFormDetail();
+      this.setItemView(null);
+    },
+
+    openMessage() {
+      this.$store.dispatch('messenger/clearMessagesText');
+      this.$store.dispatch('catalogue/setMessageDirect', true);
+      this.MESSAGE(true);
     },
 
     handlerError($event) {

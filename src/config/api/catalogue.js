@@ -6,6 +6,7 @@ const sendOrder = async (param) => httpClient.getAPI('market/order/add', { data:
 const getOrder = async () => httpClient.getAPI('market/order/list', {});
 const getFavorite = async () => httpClient.getAPI('market/get/product/favorite', {});
 const toggleFavorite = async (param) => httpClient.getAPI('market/set/product/favorite', { data: param });
+const getTop20 = async () => httpClient.getAPI('market/get/top', {});
 
 export {
   getIndex,
@@ -14,4 +15,5 @@ export {
   sendOrder,
   getFavorite,
   toggleFavorite,
+  getTop20,
 };

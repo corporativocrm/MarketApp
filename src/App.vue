@@ -16,7 +16,7 @@
 
 <script>
 // eslint-disable-next-line import/extensions
-import { mapActions, mapState } from 'vuex';
+import { mapState } from 'vuex';
 // eslint-disable-next-line import/extensions
 import Iniciando from './components/widget/Iniciando';
 // eslint-disable-next-line import/extensions
@@ -44,21 +44,10 @@ export default {
   computed: {
     ...mapState('WebServices', ['loading', 'preload']),
   },
-  methods: {
-    ...mapActions('notifications', ['validatePermision']),
-  },
   async mounted() {
     const isLogin = await DB.session.count();
     if (isLogin > 0) {
       this.session = await DB.session.get(1);
-
-      if (localStorage.getItem('list-notify') != null) {
-        const data = JSON.parse(localStorage.getItem('list-notify'));
-        this.$store.dispatch('notifications/setAllNotifications', { data: { response: data } });
-        if (this.validatePermision() === 'denied') {
-          console.log('permiso para notificaciones fue negado');
-        }
-      }
     } else {
       localStorage.clear();
       DB.delete().then(() => {

@@ -5,7 +5,7 @@ import StoreProfile from './modules/profile';
 import menu from './modules/menu';
 import WebServices from './modules/webservices';
 import mensaje from './modules/mensaje';
-import notifications from './modules/notifications';
+import messenger from './modules/messenger';
 import catalogue from './modules/catalogue';
 import navigationDrawer from './modules/drawer';
 
@@ -18,7 +18,7 @@ export default new Vuex.Store({
     menu,
     navigationDrawer,
     mensaje,
-    notifications,
+    messenger,
     catalogue,
   },
 });

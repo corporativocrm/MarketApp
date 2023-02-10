@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.toggleFavorite = exports.getFavorite = exports.sendOrder = exports.getOrder = exports.getProducts = exports.getIndex = void 0;
+exports.getTop20 = exports.toggleFavorite = exports.getFavorite = exports.sendOrder = exports.getOrder = exports.getProducts = exports.getIndex = void 0;
 
 var _axios = _interopRequireDefault(require("../axios"));
 
@@ -114,3 +114,20 @@ var toggleFavorite = function toggleFavorite(param) {
 };
 
 exports.toggleFavorite = toggleFavorite;
+
+var getTop20 = function getTop20() {
+  return regeneratorRuntime.async(function getTop20$(_context7) {
+    while (1) {
+      switch (_context7.prev = _context7.next) {
+        case 0:
+          return _context7.abrupt("return", _axios["default"].getAPI('market/get/top', {}));
+
+        case 1:
+        case "end":
+          return _context7.stop();
+      }
+    }
+  });
+};
+
+exports.getTop20 = getTop20;

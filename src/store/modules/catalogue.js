@@ -4,6 +4,7 @@ import {
   getOrder,
   getFavorite,
   toggleFavorite,
+  getTop20,
 } from '../../config/api/catalogue';
 
 export default {
@@ -15,9 +16,11 @@ export default {
     index: [],
     showDetail: false,
     itemView: null,
+    messageDirect: false,
     querySearch: '',
     catalogueLoaded: false,
     orders: [],
+    offerts: [],
   },
 
   mutations: {
@@ -38,12 +41,22 @@ export default {
       state.favorites = param.data.response;
       state.catalogueLoaded = true;
     },
+    SET_OFFERTS(state, param) {
+      state.offerts = param.data.response;
+    },
   },
 
   actions: {
+    hideFormDetail({ state }) {
+      state.showDetail = false;
+    },
 
     toggleFormDetail({ commit }) {
       commit('SHOW_DETAIL');
+    },
+
+    setMessageDirect({ state }, param) {
+      state.messageDirect = param;
     },
 
     setItemView({ state }, param) {
@@ -53,12 +66,16 @@ export default {
     async favorite({ state }, param) {
       await toggleFavorite(param).then((result) => {
         if (result.data.response) {
-          if (state.products.length > param.position) {
+          if (param.position === -1) {
+            const index = state.offerts.findIndex((e) => e.id === param.code);
+            if (index > -1 && state.offerts.length > index) {
+              state.offerts[index].detail.favorite = param.status;
+            }
+          } else if (state.products.length > param.position) {
             if (state.products[param.position].id === param.code) {
               state.products[param.position].detail.favorite = param.status;
             }
-          }
-          if (state.favorites.length > param.position && state.favorites[param.position].id === param.code) {
+          } else if (state.favorites.length > param.position && state.favorites[param.position].id === param.code) {
             const index = state.favorites.findIndex((obj) => obj.id === param.code);
             if (index > -1) {
               state.favorites.splice(index, 1);
@@ -86,6 +103,9 @@ export default {
     async getFavorites({ commit, state }) {
       state.catalogueLoaded = false;
       commit('SET_FAVORITES', await getFavorite());
+    },
+    async getOfferts({ commit }) {
+      commit('SET_OFFERTS', await getTop20());
     },
   },
 };
