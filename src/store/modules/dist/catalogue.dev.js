@@ -35,6 +35,7 @@ var _default = {
     },
     SET_ORDERS: function SET_ORDERS(state, param) {
       state.orders = param.data.response;
+      state.catalogueLoaded = true;
     },
     SET_FAVORITES: function SET_FAVORITES(state, param) {
       state.favorites = param.data.response;
@@ -140,21 +141,22 @@ var _default = {
       });
     },
     getOrders: function getOrders(_ref7) {
-      var commit;
+      var commit, state;
       return regeneratorRuntime.async(function getOrders$(_context3) {
         while (1) {
           switch (_context3.prev = _context3.next) {
             case 0:
-              commit = _ref7.commit;
+              commit = _ref7.commit, state = _ref7.state;
+              state.catalogueLoaded = false;
               _context3.t0 = commit;
-              _context3.next = 4;
+              _context3.next = 5;
               return regeneratorRuntime.awrap((0, _catalogue.getOrder)());
 
-            case 4:
+            case 5:
               _context3.t1 = _context3.sent;
               (0, _context3.t0)('SET_ORDERS', _context3.t1);
 
-            case 6:
+            case 7:
             case "end":
               return _context3.stop();
           }

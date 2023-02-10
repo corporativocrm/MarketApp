@@ -1,8 +1,8 @@
 {
-  "name": "com.sistemacrm",
-  "version": "3.6.0",
-  "displayName": "SistemaCRM",
-  "description": "Aplicación movil para crear pedidos,cobranzas y demas",
+  "name": "com.market.maferca",
+  "version": "1.0.0",
+  "displayName": "MarketMaferca",
+  "description": "Aplicación movil para crear pedidos",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

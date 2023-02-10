@@ -117,6 +117,20 @@
 
       </v-card>
     </v-dialog>
+
+    <!-- MODAL LOADING -->
+    <v-dialog v-model="showLoading" persistent width="300">
+      <v-card :color="profile.color" dark>
+        <v-card-text>
+          {{captionLoading}}
+          <v-progress-linear
+            indeterminate
+            color="white"
+            class="mb-0"
+          ></v-progress-linear>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </v-row>
 </template>
 <script>
@@ -132,13 +146,25 @@ export default {
   computed: {
     ...mapState('menu', ['dialogOrders']),
     ...mapState('StoreProfile', ['profile']),
-    ...mapState('catalogue', ['orders']),
+    ...mapState('catalogue', ['orders', 'catalogueLoaded']),
 
     showForm: {
       get() {
         return this.dialogOrders;
       },
       set() { },
+    },
+
+    showLoading: {
+      get() {
+        return !this.catalogueLoaded && this.dialogOrders;
+      },
+    },
+
+    captionLoading: {
+      get() {
+        return 'Descargando ordenes';
+      },
     },
 
     ordersWaiting: {
@@ -180,6 +206,15 @@ export default {
 
     alert(message, type = 'info') {
       this.$store.dispatch('mensaje/push', [message, type]);
+    },
+  },
+  watch: {
+    showForm: {
+      handler(show) {
+        if (show) {
+          this.$store.dispatch('catalogue/getOrders');
+        }
+      },
     },
   },
 };

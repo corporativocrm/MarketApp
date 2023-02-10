@@ -8,11 +8,11 @@
       persistent max-width="95%">
       <v-card>
 
-        <v-toolbar :color="profile.color" dark height="50px" max-height="50px">
+        <v-toolbar :color="profile.color" dark height="40px" max-height="40px">
           <v-icon class="mr-2">
             mdi-checkbox-marked-circle-plus-outline
           </v-icon>
-          <h1 class="title mt-2 white--text text-truncate">
+          <h1 class="title mt-0 white--text text-truncate">
             Agregar al carrito
           </h1>
           <v-spacer></v-spacer>
@@ -24,9 +24,9 @@
         </v-toolbar>
 
         <v-row justify="start">
-          <v-col cols="12" class="pa-6 pt-5 pb-2 d-flex justify-center">
+          <v-col cols="12" class="pa-4 ma-0 pb-0 d-flex justify-center">
             <v-img
-              height="250px"
+              height="230px"
               alt="loading"
               contain
               lazy-src="system/no-image.webp"
@@ -48,10 +48,10 @@
             </v-img>
           </v-col>
           <v-col cols="12" class="pa-4 pt-0">
-            <v-card-title style="padding: 8px;">
+            <v-card-title style="padding: 2px 8px;">
               <div>
                 <div class="body-1 font-weight-bold">{{getTitle}}</div>
-                <div class="mt-2 body-2">
+                <div class="mt-1 body-2">
                   SKU: {{getCode}}
                 </div>
                 <v-row
@@ -76,8 +76,6 @@
                       v-model="quantity"
                       style="margin:4px 2px auto 8px;"
                       class="pa-0"
-                      label="search"
-                      type="search"
                       hide-details rounded dense solo-inverted
                       prepend-inner-icon="mdi-minus"
                       append-icon="mdi-plus"

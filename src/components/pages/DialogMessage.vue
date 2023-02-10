@@ -8,6 +8,23 @@
     v-model="showForm"
     transition="dialog-bottom-transition">
       <v-card>
+        <v-container v-if="messageList.length === 0">
+          <v-card
+            class="mx-auto pa-0 mt-5"
+            color="white"
+            v-for="item in [1,2,3]"
+            :key="item">
+            <v-row>
+              <v-col cols="12" class="pt-2">
+                <v-skeleton-loader
+                  v-bind="attrs"
+                  type="list-item-avatar"
+                ></v-skeleton-loader>
+              </v-col>
+            </v-row>
+          </v-card>
+        </v-container>
+
         <v-row dense class="pa-2">
           <div style="overflow-y:auto;min-height:90vh;max-height:92vh;width:100%">
 
@@ -157,7 +174,6 @@
             </div>
           </div>
         </v-row>
-
       </v-card>
     </v-dialog>
   </v-row>

@@ -36,6 +36,7 @@ export default {
     },
     SET_ORDERS(state, param) {
       state.orders = param.data.response;
+      state.catalogueLoaded = true;
     },
     SET_FAVORITES(state, param) {
       state.favorites = param.data.response;
@@ -94,7 +95,8 @@ export default {
       }
     },
 
-    async getOrders({ commit }) {
+    async getOrders({ commit, state }) {
+      state.catalogueLoaded = false;
       commit('SET_ORDERS', await getOrder());
     },
     async getFavorites({ commit, state }) {
