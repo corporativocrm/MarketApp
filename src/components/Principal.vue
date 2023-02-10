@@ -223,6 +223,8 @@ export default {
         position: -1,
         code: item.id,
         status: !parseInt(item.detail.favorite, 10),
+      }).then(() => {
+        this.$store.dispatch('catalogue/getOfferts');
       });
     },
 

@@ -66,19 +66,16 @@ export default {
     async favorite({ state }, param) {
       await toggleFavorite(param).then((result) => {
         if (result.data.response) {
-          if (param.position === -1) {
-            const index = state.offerts.findIndex((e) => e.id === param.code);
-            if (index > -1 && state.offerts.length > index) {
-              state.offerts[index].detail.favorite = param.status;
-            }
-          } else if (state.products.length > param.position) {
-            if (state.products[param.position].id === param.code) {
-              state.products[param.position].detail.favorite = param.status;
-            }
-          } else if (state.favorites.length > param.position && state.favorites[param.position].id === param.code) {
-            const index = state.favorites.findIndex((obj) => obj.id === param.code);
-            if (index > -1) {
-              state.favorites.splice(index, 1);
+          if (param.position > -1) {
+            if (state.products.length > param.position) {
+              if (state.products[param.position].id === param.code) {
+                state.products[param.position].detail.favorite = param.status;
+              }
+            } else if (state.favorites.length > param.position && state.favorites[param.position].id === param.code) {
+              const index = state.favorites.findIndex((obj) => obj.id === param.code);
+              if (index > -1) {
+                state.favorites.splice(index, 1);
+              }
             }
           }
         }

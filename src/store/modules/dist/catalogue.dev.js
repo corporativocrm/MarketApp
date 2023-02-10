@@ -71,25 +71,19 @@ var _default = {
               _context.next = 3;
               return regeneratorRuntime.awrap((0, _catalogue.toggleFavorite)(param).then(function (result) {
                 if (result.data.response) {
-                  if (param.position === -1) {
-                    var index = state.offerts.findIndex(function (e) {
-                      return e.id === param.code;
-                    });
+                  if (param.position > -1) {
+                    if (state.products.length > param.position) {
+                      if (state.products[param.position].id === param.code) {
+                        state.products[param.position].detail.favorite = param.status;
+                      }
+                    } else if (state.favorites.length > param.position && state.favorites[param.position].id === param.code) {
+                      var index = state.favorites.findIndex(function (obj) {
+                        return obj.id === param.code;
+                      });
 
-                    if (index > -1 && state.offerts.length > index) {
-                      state.offerts[index].detail.favorite = param.status;
-                    }
-                  } else if (state.products.length > param.position) {
-                    if (state.products[param.position].id === param.code) {
-                      state.products[param.position].detail.favorite = param.status;
-                    }
-                  } else if (state.favorites.length > param.position && state.favorites[param.position].id === param.code) {
-                    var _index = state.favorites.findIndex(function (obj) {
-                      return obj.id === param.code;
-                    });
-
-                    if (_index > -1) {
-                      state.favorites.splice(_index, 1);
+                      if (index > -1) {
+                        state.favorites.splice(index, 1);
+                      }
                     }
                   }
                 }
